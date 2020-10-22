@@ -34,7 +34,7 @@ def detect_area(image,lower_color,upper_color,marker_id):
     gray       = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_250)  # Use 5x5
     parameters = aruco.DetectorParameters_create()  
-    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=0)
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
     aruco.drawDetectedMarkers(image,corners)
 
 
@@ -50,5 +50,5 @@ def detect_area(image,lower_color,upper_color,marker_id):
 
 
 
-print(detect_area(image,lower_color,upper_color,marker_id))
+print(detect_area(image,lower_color,upper_color,0))
 cv2.imwrite("image_sensing_test.png",image)
