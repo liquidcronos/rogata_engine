@@ -58,5 +58,5 @@ def detect_area(image,lower_color,upper_color,marker_id):
 
 
 
-print(detect_area(image,lower_color,upper_color,0))
+#print(detect_area(image,lower_color,upper_color,0))
 cv2.imwrite("image_sensing_test.png",image)
