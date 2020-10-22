@@ -8,6 +8,8 @@ from random import randrange
 
 
 
+
+
 '''
 This script tests the optical detection static objects, comprised of a colored outline and a aruco marker within.
 '''
@@ -16,6 +18,12 @@ upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
 image                  = cv2.imread("test_image_2.jpg")
 marker_id              = 0
 
+
+def is_inside(obj,area):
+    if cv2.pointPolygonTest(area,obj, False) >= 0:
+        return True
+    else:
+        return False
 
 #returns contour if any mage area description
 def detect_area(image,lower_color,upper_color,marker_id):
@@ -43,7 +51,7 @@ def detect_area(image,lower_color,upper_color,marker_id):
         center = np.sum(corners[0][0],axis=0)/4
         cv2.circle(image,(center[0],center[1]),7,(0,0,255),7)
         #only contour around marker is returned
-        if cv2.pointPolygonTest(contour,(center[0],center[1]), False) >= 0:
+        if is_inside((center[0],center[1]),contour):
             cv2.drawContours(image, contour, -1, (0,0,255),3)
             return contour
     return None
