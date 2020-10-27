@@ -15,8 +15,8 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-image                  = cv2.imread("test_image_2.jpg")
-marker_id              = 0
+image                  = cv2.imread("test_image.jpg")
+#marker_id              = 0
 
 
 def is_inside(obj,area):
@@ -26,7 +26,7 @@ def is_inside(obj,area):
         return False
 
 #returns contour if any mage area description
-def detect_area(image,lower_color,upper_color,marker_id):
+def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     # carefull ros will later on need rgb2hsv
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -34,8 +34,6 @@ def detect_area(image,lower_color,upper_color,marker_id):
     mask =cv2.inRange(hsv_img,lower_color,upper_color)
     contours, hierachy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    #visualize contours:
-    cv2.drawContours(image, contours, -1, 255,3)
 
 
     #marker detection:
@@ -43,15 +41,23 @@ def detect_area(image,lower_color,upper_color,marker_id):
     aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_250)  # Use 5x5
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
-    print(corners)
-    aruco.drawDetectedMarkers(image,corners)
+    print(ids)
+    if marker_id not in ids:
+        print(marker_id)
+        return None
+    else:
+        indice=np.where(ids == marker_id)
+        center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
+
+
+    if draw == True:
+        cv2.circle(image,(center[0],center[1]),7,(0,0,255),7)
+        cv2.drawContours(image, contours, -1, 255,3)
+        aruco.drawDetectedMarkers(image,corners)
 
 
     #final version only searches for specifc marker ID !
-    print(len(contours))
     for contour in contours:
-        center = np.sum(corners[0][0],axis=0)/4
-        cv2.circle(image,(center[0],center[1]),7,(0,0,255),7)
         #only contour around marker is returned
         if is_inside((center[0],center[1]),contour):
             cv2.drawContours(image, contour, -1, (0,0,255),3)
@@ -64,6 +70,16 @@ def detect_area(image,lower_color,upper_color,marker_id):
 
 
 def calibrate_colors():
+    def nothing(x):
+        pass
+    cv2.namedWindow("Test image")
+    cv2.createTrackbar("H","Test image",0,179,nothing)
+    cv2.createTrackbar("H range","Test image",0,50,nothing)
+    cv2.createTrackbar("S","Test image",0,255,nothing)
+    cv2.createTrackbar("S range","Test image",0,120,nothing)
+    cv2.createTrackbar("V","Test image",0,255,nothing)
+    cv2.createTrackbar("V range","Test image",0,120,nothing)
+    cv2.createTrackbar("Marker Id","Test image",0,120,nothing)
     while(1):
         k = cv2.waitKey(1)
         if k == 27:
@@ -79,21 +95,19 @@ def calibrate_colors():
         step      = np.array([cv2.getTrackbarPos("H range","Test image"),
                               cv2.getTrackbarPos("S range","Test image"),
                               cv2.getTrackbarPos("V range","Test image")])
-        used_img  = image.copy()
-        #TODO add floor so that values are never outside of picture range
-        find_contour= detect_area(used_img,mid_color-step,mid_color+step,marker_id)
+        marker_id = cv2.getTrackbarPos("Marker Id", "Test image")
+        print("bar result", marker_id)
+
+        min_value    = np.zeros(3)
+        max_value    = np.array([179,255,255])
+        lower_bound  = np.clip(mid_color-step,min_value,max_value)
+        upper_bound  = np.clip(mid_color+step,min_value,max_value)
+
+        used_img     = image.copy()
+        find_contour = detect_area(used_img,lower_bound,upper_bound,marker_id,True)
         cv2.imshow("Test image",used_img)
 
 
-def nothing(x):
-    pass
-cv2.namedWindow("Test image")
-cv2.createTrackbar("H","Test image",0,179,nothing)
-cv2.createTrackbar("H range","Test image",0,50,nothing)
-cv2.createTrackbar("S","Test image",0,255,nothing)
-cv2.createTrackbar("S range","Test image",0,120,nothing)
-cv2.createTrackbar("V","Test image",0,255,nothing)
-cv2.createTrackbar("V range","Test image",0,120,nothing)
 
 
 calibrate_colors()
