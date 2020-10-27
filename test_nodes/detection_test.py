@@ -15,8 +15,8 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-image                  = cv2.imread("test_image_3.jpg")
-#marker_id              = 0
+#image                  = cv2.imread("test_image_3.jpg")
+image                  = cv2.imread("test_image.jpg")
 
 
 def is_inside(obj,area):
@@ -31,8 +31,19 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     # color detection
-    mask =cv2.inRange(hsv_img,lower_color,upper_color)
-    #contours, hierachy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if lower_color[0] <=0:
+        second_lower    = lower_color
+        second_lower[0] = 179+lower_color[0]
+        second_upper    = upper_color
+        second_upper[0] = 179
+
+        lower_color[0] = 0
+        
+        mask1 =cv2.inRange(hsv_img,lower_color,upper_color)
+        mask2 =cv2.inRange(hsv_img,second_lower,second_upper)
+        mask= mask1 | mask2
+    else:
+        mask =cv2.inRange(hsv_img,lower_color,upper_color)
     contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     
@@ -116,6 +127,7 @@ def calibrate_colors():
         marker_id =           cv2.getTrackbarPos("Marker Id", "Test image")
 
         min_value    = np.zeros(3)
+        min_value[0] = -179
         max_value    = np.array([179,255,255])
         lower_bound  = np.clip(mid_color-step,min_value,max_value)
         upper_bound  = np.clip(mid_color+step,min_value,max_value)
