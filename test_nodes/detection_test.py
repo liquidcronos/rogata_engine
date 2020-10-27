@@ -15,6 +15,7 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
+#image                  = cv2.imread("test_image_3.jpg")
 image                  = cv2.imread("test_image_3.jpg")
 #marker_id              = 0
 
@@ -32,7 +33,8 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
 
     # color detection
     mask =cv2.inRange(hsv_img,lower_color,upper_color)
-    contours, hierachy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    #contours, hierachy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 
 
@@ -41,11 +43,12 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_250)  # Use 5x5
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
-    print(ids)
+
+    if draw == True:
+        cv2.drawContours(image, contours, -1, 255,3)
     if ids.any() == None:
         return None
     if marker_id not in ids:
-        print(marker_id)
         return None
     else:
         indice=np.where(ids == marker_id)
@@ -54,7 +57,6 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
 
     if draw == True:
         cv2.circle(image,(center[0],center[1]),7,(0,0,255),7)
-        cv2.drawContours(image, contours, -1, 255,3)
         aruco.drawDetectedMarkers(image,corners)
 
 
@@ -97,8 +99,8 @@ def calibrate_colors():
         step      = np.array([cv2.getTrackbarPos("H range","Test image"),
                               cv2.getTrackbarPos("S range","Test image"),
                               cv2.getTrackbarPos("V range","Test image")])
-        marker_id = cv2.getTrackbarPos("Marker Id", "Test image")
-        print("bar result", marker_id)
+
+        marker_id =           cv2.getTrackbarPos("Marker Id", "Test image")
 
         min_value    = np.zeros(3)
         max_value    = np.array([179,255,255])
