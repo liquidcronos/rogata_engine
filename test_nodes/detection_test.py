@@ -43,10 +43,12 @@ def detect_area(image,lower_color,upper_color,marker_id):
     aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_250)  # Use 5x5
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
+    print(corners)
     aruco.drawDetectedMarkers(image,corners)
 
 
     #final version only searches for specifc marker ID !
+    print(len(contours))
     for contour in contours:
         center = np.sum(corners[0][0],axis=0)/4
         cv2.circle(image,(center[0],center[1]),7,(0,0,255),7)
@@ -55,6 +57,42 @@ def detect_area(image,lower_color,upper_color,marker_id):
             cv2.drawContours(image, contour, -1, (0,0,255),3)
             return contour
     return None
+
+
+
+
+
+
+def calibrate_colors():
+    while(1):
+        k = cv2.waitKey(1) & 0xFF
+        if k == 27:
+            break
+        mid_color = np.array([cv2.getTrackbarPos("H","Test image"),
+                              cv2.getTrackbarPos("S","Test image"),
+                              cv2.getTrackbarPos("V","Test image")])
+        #mid_color = 0.5*(upper_color-lower_color)
+        step      = np.array([cv2.getTrackbarPos("H range","Test image"),
+                              cv2.getTrackbarPos("S range","Test image"),
+                              cv2.getTrackbarPos("V range","Test image")])
+        used_img  = image.copy()
+        #TODO add floor so that values are never outside of picture range
+        detect_area(used_img,mid_color-step,mid_color+step,marker_id)
+        cv2.imshow("Test image",used_img)
+
+
+def nothing(x):
+    pass
+cv2.namedWindow("Test image")
+cv2.createTrackbar("H","Test image",0,179,nothing)
+cv2.createTrackbar("H range","Test image",0,50,nothing)
+cv2.createTrackbar("S","Test image",0,255,nothing)
+cv2.createTrackbar("S range","Test image",0,120,nothing)
+cv2.createTrackbar("V","Test image",0,255,nothing)
+cv2.createTrackbar("V range","Test image",0,120,nothing)
+
+
+calibrate_colors()
 
 
 
