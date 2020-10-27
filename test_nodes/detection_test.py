@@ -15,7 +15,6 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-#image                  = cv2.imread("test_image_3.jpg")
 image                  = cv2.imread("test_image_3.jpg")
 #marker_id              = 0
 
@@ -36,14 +35,14 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     #contours, hierachy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-
+    
 
     #marker detection:
     gray       = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_250)  # Use 5x5
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
-
+    
     if draw == True:
         cv2.drawContours(image, contours, -1, 255,3)
     if ids.any() == None:
@@ -59,13 +58,27 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
         cv2.circle(image,(center[0],center[1]),7,(0,0,255),7)
         aruco.drawDetectedMarkers(image,corners)
 
+    #TODO smallest contour should be real contour encompassing whole image
+    row, col =hsv_img.shape[:2]
+    smallest_contour = np.array([[0,0],[0,row],[col,row],[col,0]])
+    #TODO not needet with real contour
+    contour_found    = 0
+    print( cv2.contourArea(smallest_contour))
+    for i in range(len(contours)):
+        if is_inside((center[0],center[1]),contours[i]):
+            if cv2.contourArea(contours[i]) <= cv2.contourArea(smallest_contour):
+                contour_found = 1
+                smallest_contour = contours[i]
+            if draw == True:
+                cv2.drawContours(image, contours[i], -1, (0,0,255),3)
+    if draw == True and contour_found == 1:
+        print("drew contour")
+        cv2.drawContours(image, smallest_contour, -1, (0,255,0),3)
 
-    #final version only searches for specifc marker ID !
-    for contour in contours:
-        #only contour around marker is returned
-        if is_inside((center[0],center[1]),contour):
-            cv2.drawContours(image, contour, -1, (0,0,255),3)
-            return contour
+    
+
+
+    return smallest_contour
     return None
 
 
