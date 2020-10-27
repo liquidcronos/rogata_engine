@@ -65,9 +65,13 @@ def detect_area(image,lower_color,upper_color,marker_id):
 
 def calibrate_colors():
     while(1):
-        k = cv2.waitKey(1) & 0xFF
+        k = cv2.waitKey(1)
         if k == 27:
             break
+        if k == ord('s'):
+            np.save("contour_save",find_contour)
+            break
+
         mid_color = np.array([cv2.getTrackbarPos("H","Test image"),
                               cv2.getTrackbarPos("S","Test image"),
                               cv2.getTrackbarPos("V","Test image")])
@@ -77,7 +81,7 @@ def calibrate_colors():
                               cv2.getTrackbarPos("V range","Test image")])
         used_img  = image.copy()
         #TODO add floor so that values are never outside of picture range
-        detect_area(used_img,mid_color-step,mid_color+step,marker_id)
+        find_contour= detect_area(used_img,mid_color-step,mid_color+step,marker_id)
         cv2.imshow("Test image",used_img)
 
 
