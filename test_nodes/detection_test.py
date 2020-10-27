@@ -15,7 +15,7 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-image                  = cv2.imread("test_image.jpg")
+image                  = cv2.imread("test_image_3.jpg")
 #marker_id              = 0
 
 
@@ -42,6 +42,8 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
     print(ids)
+    if ids.any() == None:
+        return None
     if marker_id not in ids:
         print(marker_id)
         return None
