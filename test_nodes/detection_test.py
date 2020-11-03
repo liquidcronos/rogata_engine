@@ -15,8 +15,8 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-#image                  = cv2.imread("test_image_3.jpg")
-image                  = cv2.imread("test_image.jpg")
+image                  = cv2.imread("test_image_3.jpg")
+#image                  = cv2.imread("test_image.jpg")
 
 
 def is_inside(obj,area):
@@ -44,6 +44,8 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
         mask= mask1 | mask2
     else:
         mask =cv2.inRange(hsv_img,lower_color,upper_color)
+
+    #TODO carefull depending on opencv version the return may be different
     contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     
@@ -82,14 +84,13 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
                 smallest_contour = contours[i]
             if draw == True:
                 cv2.drawContours(image, contours[i], -1, (0,0,255),3)
-    if draw == True and contour_found == 1:
-        print("drew contour")
-        cv2.drawContours(image, smallest_contour, -1, (0,255,0),3)
 
-    
+    if contour_found == 1:
+        if draw == True:
+            print("drew contour")
+            cv2.drawContours(image, smallest_contour, -1, (0,255,0),3)
+        return smallest_contour
 
-
-    return smallest_contour
     return None
 
 
