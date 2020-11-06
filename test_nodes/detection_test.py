@@ -1,8 +1,7 @@
 import cv2
 import cv2.aruco as aruco
 import numpy as np
-
-from random import randrange
+import yaml
 
 
 
@@ -15,8 +14,8 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-image                  = cv2.imread("test_image_3.jpg")
-#image                  = cv2.imread("test_image.jpg")
+#image                  = cv2.imread("test_image_3.jpg")
+image                  = cv2.imread("test_image.jpg")
 
 
 def is_inside(obj,area):
@@ -46,7 +45,7 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
         mask =cv2.inRange(hsv_img,lower_color,upper_color)
 
     #TODO carefull depending on opencv version the return may be different
-    contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    _,contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     
 
