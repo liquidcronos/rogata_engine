@@ -10,5 +10,8 @@ The [Wiki](https://github.com/liquidcronos/Robokart-Engine/wiki) offers a variet
 
 
 ## Getting Started
-
+* Install [ROS Melodic](http://wiki.ros.org/melodic)
+* Setup ROS on your Robots (the tutorials will use the [turtlebot burger](https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/)
+* Install [OpenCV-Python](https://docs.opencv.org/master/da/df6/tutorial_py_table_of_contents_setup.html)
+* Follow the [Setup Tutorial](https://github.com/liquidcronos/Robokart-Engine/wiki/Set-Up-Robokart-Enviroment) in the Wiki
 
