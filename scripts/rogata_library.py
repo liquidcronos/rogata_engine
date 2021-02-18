@@ -48,11 +48,14 @@ class game_object:
 
     def line_intersect(self,start,direction,length):
         touched  = False
+        initial_polygon_test = np.zeros(len(self.area))
+        for i in range(len(self.area)):
+            initial_polygon_test[i]=cv2.pointPolygonTest(self.area[i],tuple(start),False)
         for k in  np.arange(0,length,1):
             position = start + k*direction
             for i in range(len(self.area)):
                 point   = tuple(position)
-                touched = touched or (cv2.pointPolygonTest(self.area[i],point,False)!=-1)
+                touched = touched or (cv2.pointPolygonTest(self.area[i],point,False)!=initial_polygon_test[i])
             if touched != False:
                 break
         return position

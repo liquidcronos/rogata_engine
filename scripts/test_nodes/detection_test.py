@@ -14,8 +14,7 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-image                  = cv2.imread("test_image_3.jpg")
-#image                  = cv2.imread("test_image.jpg")
+image                  = cv2.imread("ray_casting.jpg")
 
 
 def is_inside(obj,area):
@@ -51,7 +50,7 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
 
     #marker detection:
     gray       = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-    aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_250)  # Use 5x5
+    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)  # Use 5x5
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
     
