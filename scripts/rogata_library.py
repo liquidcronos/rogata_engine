@@ -15,11 +15,28 @@ class game_object:
     def is_inside(self,point):
         #TODO use the hole_spec tree to build the needet logic statement for detemining inside and outside of an arrea
         point=tuple(point)
-
+        
+        inside_contour=np.zeros(len(self.area))
         for i in range(len(self.area)):
-            #Checks if inside
-            inside_contour=cv2.pointPolygonTest(self.area[i],point,False)
-        return 0
+            inside_contour[i]= cv2.pointPolygonTest(self.area[i],point,False) != -1
+            print(inside_contour[i])
+
+        inside = False
+        for i in range(min(np.abs(self.holes)),max(np.abs(self.holes))+1):
+            holes =  np.argwhere(self.holes == -i)
+            areas =  np.argwhere(self.holes ==  i)
+            
+            inside_hole = False
+            for hole in holes:
+                inside_hole = inside_hole or inside_contour[hole]
+
+            inside_area = False
+            for area in areas:
+                inside_area = inside_area or inside_contour[area]
+
+            inside = inside or (inside_area and not inside_hole)
+
+        return inside
 
     def shortest_distance(self,point):
         point=tuple(point)
