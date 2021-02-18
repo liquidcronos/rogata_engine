@@ -49,11 +49,13 @@ class game_object:
             cx   = cx   + moments['m10']
             cy   = cy   + moments['m01']
             size = size + moments['m00']
-        return [cx/size,cy/size]
+        return np.array([int(cx/size),int(cy/size)])
 
     def move_object(self,new_pos,new_ori=0):
+        current_center   = self.get_position()
+        print(current_center)
         for i in range(len(self.area)):
-            centered_contour = self.area[i] - self.get_position()
+            centered_contour = self.area[i] - current_center
             #TODO rotation of contour goes here. Uses polar conversion
             self.area[i]=centered_contour+new_pos
         return 0
