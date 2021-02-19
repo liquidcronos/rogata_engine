@@ -40,24 +40,21 @@ class game_object:
 
     def shortest_distance(self,point):
         point=tuple(point)
-        print(point)
         min_dist = np.inf
         for i in range(len(self.area)):
             min_dist=np.minimum(np.abs(cv2.pointPolygonTest(self.area[i],point,True)),min_dist)
         return min_dist
 
-    def line_intersect(self,start,direction,length):
+    def line_intersect(self,start,direction,length,iterations=100,precision=0.01):
         touched  = False
-        initial_polygon_test = np.zeros(len(self.area))
-        for i in range(len(self.area)):
-            initial_polygon_test[i]=cv2.pointPolygonTest(self.area[i],tuple(start),False)
-        for k in  np.arange(0,length,1):
-            position = start + k*direction
-            for i in range(len(self.area)):
-                point   = tuple(position)
-                touched = touched or (cv2.pointPolygonTest(self.area[i],point,False)!=initial_polygon_test[i])
-            if touched != False:
+        position = start
+        for k in  range(iterations):
+            shortest_dist = self.shortest_distance(position)
+            position      = position + shortest_dist*direction
+
+            if shortest_dist <= precision:
                 break
+            
         return position
 
     def get_position(self):
