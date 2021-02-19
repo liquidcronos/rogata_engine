@@ -42,12 +42,14 @@ while(cap.isOpened()):
         indice=np.where(ids == marker_id)
         center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
         test_point=np.array([center[0],center[1]])
+        
+        inside = obj.is_inside(test_point)
+        font_placement = (int(test_point[0]),int(test_point[1]-10))
+        if inside:
+            cv2.putText(image,"Inside",font_placement,cv2.FONT_HERSHEY_SIMPLEX,1,(209, 80, 0, 255), 3) 
+        else:
+            cv2.putText(image,"Outside",font_placement,cv2.FONT_HERSHEY_SIMPLEX,1,(209, 80, 0, 255), 3) 
 
-        for i in range(36):
-            direction = np.array([np.sin(2*np.pi/36*i),np.cos(2*np.pi/36*i)])
-            length    = 300
-            end_point = obj.line_intersect(test_point,direction,length)
-            cv2.line(image,tuple(test_point),(int(end_point[0]),int(end_point[1])),(255,0,0),3)
         cv2.imshow("rac casting test",image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
