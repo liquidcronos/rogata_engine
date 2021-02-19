@@ -52,7 +52,7 @@ class game_object:
             shortest_dist = self.shortest_distance(position)
             position      = position + shortest_dist*direction
 
-            if shortest_dist <= precision:
+            if shortest_dist <= precision or np.linalg.norm(position-start) >= length:
                 break
             
         return position
