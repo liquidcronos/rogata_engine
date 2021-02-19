@@ -17,13 +17,13 @@ image                  = cv2.imread(sys.argv[1])
 
 
 def is_inside(obj,area):
-    if cv2.pointPolygonTest(area,obj, False) >= 0:
+    if cv2.pointPolygonTest(area,obj, False) > 0:
         return True
     else:
         return False
 
 #returns contour if any mage area description
-def detect_area(image,lower_color,upper_color,marker_id,draw=False):
+def detect_area(image,lower_color,upper_color,marker_id,min_size,draw=False):
     # carefull ros will later on need rgb2hsv
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -59,7 +59,8 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
         if ids.any() == None:
             return None
     except:
-        print("No Markers in this Image")
+        print("No Markers in this Image.")
+        print("Without Markers the Calibration can not be performed")
         return None
     if marker_id not in ids:
         return None
@@ -78,7 +79,12 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     #TODO not needet with real contour
     contour_found    = 0
     for i in range(len(contours)):
-        if is_inside((center[0],center[1]),contours[i]):
+        marker_in_contour = True
+
+        for elements in corners[indice[0][0]][indice[1][0]]:
+            marker_in_contour = marker_in_contour and is_inside(tuple(elements),contours[i])
+        marker_in_contour = marker_in_contour and cv2.contourArea(contours[i]) >= min_size
+        if  marker_in_contour:
             if cv2.contourArea(contours[i]) <= cv2.contourArea(smallest_contour):
                 contour_found = 1
                 smallest_contour = contours[i]
@@ -87,7 +93,7 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
 
     if contour_found == 1:
         if draw == True:
-            cv2.drawContours(image, smallest_contour, -1, (0,255,0),3)
+            cv2.drawContours(image, smallest_contour, -1, (0,255,0),6)
         return smallest_contour
 
     return None
@@ -108,6 +114,7 @@ def calibrate_colors():
     cv2.createTrackbar("V","Test image",0,255,nothing)
     cv2.createTrackbar("V range","Test image",0,120,nothing)
     cv2.createTrackbar("Marker Id","Test image",0,120,nothing)
+    cv2.createTrackbar("Minimum hole size","Test image",0,1200**2,nothing)
     while(1):
         k = cv2.waitKey(1)
         if k == 27:
@@ -128,6 +135,7 @@ def calibrate_colors():
                               cv2.getTrackbarPos("V range","Test image")])
 
         marker_id =           cv2.getTrackbarPos("Marker Id", "Test image")
+        min_size  =           cv2.getTrackbarPos('Minimum hole size','Test image')
 
         min_value    = np.zeros(3)
         min_value[0] = -179
@@ -136,7 +144,7 @@ def calibrate_colors():
         upper_bound  = np.clip(mid_color+step,min_value,max_value)
 
         used_img     = image.copy()
-        find_contour = detect_area(used_img,lower_bound,upper_bound,marker_id,True)
+        find_contour = detect_area(used_img,lower_bound,upper_bound,marker_id,min_size,True)
         cv2.imshow("Test image",used_img)
 
 
