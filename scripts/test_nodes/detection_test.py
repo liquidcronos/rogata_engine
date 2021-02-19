@@ -1,8 +1,7 @@
 import cv2
 import cv2.aruco as aruco
 import numpy as np
-import yaml
-
+import sys
 
 
 
@@ -14,7 +13,7 @@ This script tests the optical detection static objects, comprised of a colored o
 '''
 lower_color            = np.array([0,50,20])      #([71,62,0]) for rgb
 upper_color            = np.array([20,255,255])      #([60,255,60]) for rgb
-image                  = cv2.imread("ray_casting.jpg")
+image                  = cv2.imread(sys.argv[1])
 
 
 def is_inside(obj,area):
@@ -50,13 +49,17 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
 
     #marker detection:
     gray       = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)  # Use 5x5
+    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)  # Use 4x4
     parameters = aruco.DetectorParameters_create()  
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
     
     if draw == True:
         cv2.drawContours(image, contours, -1, 255,3)
-    if ids.any() == None:
+    try:
+        if ids.any() == None:
+            return None
+    except:
+        print("No Markers in this Image")
         return None
     if marker_id not in ids:
         return None
@@ -74,7 +77,6 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
     smallest_contour = np.array([[0,0],[0,row],[col,row],[col,0]])
     #TODO not needet with real contour
     contour_found    = 0
-    print( cv2.contourArea(smallest_contour))
     for i in range(len(contours)):
         if is_inside((center[0],center[1]),contours[i]):
             if cv2.contourArea(contours[i]) <= cv2.contourArea(smallest_contour):
@@ -85,7 +87,6 @@ def detect_area(image,lower_color,upper_color,marker_id,draw=False):
 
     if contour_found == 1:
         if draw == True:
-            print("drew contour")
             cv2.drawContours(image, smallest_contour, -1, (0,255,0),3)
         return smallest_contour
 
@@ -112,8 +113,11 @@ def calibrate_colors():
         if k == 27:
             break
         if k == ord('s'):
-            np.save("contour_save",find_contour)
-            break
+            print("Please Enter a File name:")
+            file_name = raw_input()
+            np.save(file_name,find_contour)
+            print("File ",file_name," saved.")
+
 
         mid_color = np.array([cv2.getTrackbarPos("H","Test image"),
                               cv2.getTrackbarPos("S","Test image"),
@@ -142,5 +146,4 @@ calibrate_colors()
 
 
 
-#print(detect_area(image,lower_color,upper_color,0))
 cv2.imwrite("image_sensing_test.png",image)
