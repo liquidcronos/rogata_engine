@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 import cv2.aruco as aruco
+import rospy
+from rogata_engine.srv import *
 
 class game_object:
     def __init__(self,name,contour_array,hole_spec):
@@ -79,7 +81,49 @@ class game_object:
 
 class dynamic_object(game_object):
     def __init__(self,name,position,hitbox):
-        #compute contour from hitbox and position
+        #have marker ID OR Color, use move_object function to move
         return 0
 
+
+class engine(game_object_list):
+    
+    def __init__(self,game_object_list):
+        self.game_objects={}
+        for objects in game_object_list:
+            self.game_objects[objects.name]= objects
+
+        pos_serv    = rospy.Service('get_position',RequestPos,self.handle_get_position)
+        dist_serv   = rospy.Service('get_distance',RequestDist,self.handle_get_distance)
+        inters_serv = rospy.service('intersect_line',RequestInter,self.handle_line_intersect)
+        inside_serv = rospy.Service('check_inside',CheckInside,self.handle_inside_check)
+        rospy.spin()
+
+
+    def handle_get_position(self,request):
+        choosen_object = request.object
+        point          = np.array([reqest.x,request.y])
+        pos            = self.game_objects[choosen_object].get_position(point)
+        return RequestPosResponse(pos[0],pos[1])
+
+    def handle_line_intersect(self,request):
+        choosen_object = request.object
+        origin         = np.array(request.line.x,request.line.y)
+        direction      = np.array([np.cos(request.line.theta),np.sin(request.line.theta)])
+        length         = request.line.length
+        intersect      = choosen_object.line_intersect(origin,direction,length)
+        return RequestInterResponse(intersect[0],intersect[1])
+
+    def handle_get_distance(self,request):
+        choosen_object = request.object
+        point          = np.array([reqest.x,request.y])
+        dist           = self.game_objects[choosen_object].shortest_distance(point)
+        return RequestDistResponse(dist)
+
+    def handle_inside_check(self,request):
+        choosen_object = request.object
+        point          = np.array([reqest.x,request.y])
+        inside         = bool(choosen_object.is_inside(point))
+        return CheckInsideResponse(inside)
+
+    
 
