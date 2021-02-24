@@ -5,16 +5,68 @@ import rospy
 from rogata_engine.srv import *
 
 class game_object:
+    """
+    A class defining the most basic game objects of the engine
+
+    ...
+
+    Attributes
+    ----------
+    name : str
+        the name of the object
+    area :  array
+        array containing all borders of the object
+    holes : array
+        array specifying witch border constitues a hole and which an outer border
+
+    Methods
+    -------
+    is_inside(point)
+        checks wheter a point is inside the area of the object
+    shortest_distance(point)
+        calculates the shortest distance between the point and the border of the object
+    line_intersect(start,direction,length,iterations=100,precision=0.01)
+        calculates the intersection between a line and the border of the object
+    """
+
+
     def __init__(self,name,contour_array,hole_spec):
+        """
+        Parameters
+        ----------
+        name : str
+            the name of the object
+        area :  array
+            array containing all borders of the object
+        holes : array
+            array specifying witch border constitues a hole and which an outer border
+        """
+
+
         #TODO input validation: hole_spec should have length of contour array
         self.name = name
         self.area=contour_array
         self.holes=hole_spec
 
-    def __del__(self):
-        print('Object deleted')
 
     def is_inside(self,point):
+        """Checks wheter a point is inside the area of the object
+
+        A point directl on the border is also considered inside
+
+        Parameters
+        ---------
+        point : numpy array
+            A 2D point which is to be checked
+
+        
+        Returns
+        -------
+        bool 
+            a truthvalue indicating wheter or not the point  is inside the game object 
+        """
+
+
         #TODO use the hole_spec tree to build the needet logic statement for detemining inside and outside of an arrea
         point=tuple(point)
         
@@ -38,9 +90,24 @@ class game_object:
 
             inside = inside or (inside_area and not inside_hole)
 
-        return inside
+        return bool(inside)
 
     def shortest_distance(self,point):
+        """calculates the shortest distance between the point and the border of the object
+
+        Also returns a positive distance when inside the object
+
+        Parameters
+        ---------
+        point : numpy array
+            A 2D point which is to be checked
+
+        Returns
+        -------
+        scalar
+            distance to border of the object
+        """
+
         point=tuple(point)
         min_dist = np.inf
         for i in range(len(self.area)):
@@ -85,7 +152,7 @@ class dynamic_object(game_object):
         return 0
 
 
-class engine(game_object_list):
+class scene():
     
     def __init__(self,game_object_list):
         self.game_objects={}
