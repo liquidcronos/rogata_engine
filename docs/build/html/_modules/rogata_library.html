@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>rogata_library &mdash; RoGaTa Engine 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="RoGaTa Engine 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> RoGaTa Engine
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="simple">
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">RoGaTa Engine</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      
+    <li>rogata_library</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for rogata_library</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">cv2.aruco</span> <span class="kn">as</span> <span class="nn">aruco</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">from</span> <span class="nn">rogata_engine.srv</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="game_object"><a class="viewcode-back" href="../index.html#rogata_library.game_object">[docs]</a><span class="k">class</span> <span class="nc">game_object</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class defining the most basic game objects of the engine</span>
+
+<span class="sd">    ...</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        the name of the object</span>
+<span class="sd">    area :  array</span>
+<span class="sd">        array containing all borders of the object</span>
+<span class="sd">    holes : array</span>
+<span class="sd">        array specifying witch border constitues a hole and which an outer border</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    is_inside(point)</span>
+<span class="sd">        checks wheter a point is inside the area of the object</span>
+<span class="sd">    shortest_distance(point)</span>
+<span class="sd">        calculates the shortest distance between the point and the border of the object</span>
+<span class="sd">    line_intersect(start,direction,length,iterations=100,precision=0.01)</span>
+<span class="sd">        calculates the intersection between a line and the border of the object</span>
+<span class="sd">    get_position()</span>
+<span class="sd">        returns the position of the objects center</span>
+<span class="sd">    move_object(new_position,new_ori)</span>
+<span class="sd">        moves the object to a new position and orientation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">contour_array</span><span class="p">,</span><span class="n">hole_spec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            the name of the object</span>
+<span class="sd">        area :  array</span>
+<span class="sd">            array containing all borders of the object</span>
+<span class="sd">        holes : array</span>
+<span class="sd">            array specifying witch border constitues a hole and which an outer border</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="c1">#TODO input validation: hole_spec should have length of contour array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="o">=</span><span class="n">contour_array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="o">=</span><span class="n">hole_spec</span>
+
+
+<div class="viewcode-block" id="game_object.is_inside"><a class="viewcode-back" href="../index.html#rogata_library.game_object.is_inside">[docs]</a>    <span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks wheter a point is inside the area of the object</span>
+
+<span class="sd">        A point directl on the border is also considered inside</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ---------</span>
+<span class="sd">        point : numpy array</span>
+<span class="sd">            A 2D point which is to be checked</span>
+
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool </span>
+<span class="sd">            a truthvalue indicating wheter or not the point  is inside the game object </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="c1">#TODO use the hole_spec tree to build the needet logic statement for detemining inside and outside of an arrea</span>
+        <span class="n">point</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        
+        <span class="n">inside_contour</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)):</span>
+            <span class="n">inside_contour</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">point</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">inside_contour</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="n">inside</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">)),</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">holes</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span> <span class="o">==</span> <span class="o">-</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">areas</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span> <span class="o">==</span>  <span class="n">i</span><span class="p">)</span>
+            
+            <span class="n">inside_hole</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">for</span> <span class="n">hole</span> <span class="ow">in</span> <span class="n">holes</span><span class="p">:</span>
+                <span class="n">inside_hole</span> <span class="o">=</span> <span class="n">inside_hole</span> <span class="ow">or</span> <span class="n">inside_contour</span><span class="p">[</span><span class="n">hole</span><span class="p">]</span>
+
+            <span class="n">inside_area</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+                <span class="n">inside_area</span> <span class="o">=</span> <span class="n">inside_area</span> <span class="ow">or</span> <span class="n">inside_contour</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
+
+            <span class="n">inside</span> <span class="o">=</span> <span class="n">inside</span> <span class="ow">or</span> <span class="p">(</span><span class="n">inside_area</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inside_hole</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">inside</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="game_object.shortest_distance"><a class="viewcode-back" href="../index.html#rogata_library.game_object.shortest_distance">[docs]</a>    <span class="k">def</span> <span class="nf">shortest_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;calculates the shortest distance between the point and the border of the object</span>
+
+<span class="sd">        Also returns a positive distance when inside the object</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ---------</span>
+<span class="sd">        point : numpy array</span>
+<span class="sd">            A 2D point which is to be checked</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scalar</span>
+<span class="sd">            distance to border of the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">point</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="n">min_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)):</span>
+            <span class="n">min_dist</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">point</span><span class="p">,</span><span class="bp">True</span><span class="p">)),</span><span class="n">min_dist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">min_dist</span></div>
+
+<div class="viewcode-block" id="game_object.line_intersect"><a class="viewcode-back" href="../index.html#rogata_library.game_object.line_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">,</span><span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">precision</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;calculates the intersection between a line and the border of the object</span>
+
+<span class="sd">        Iterations and precision are kept at standart values if non are provided</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : numpy array</span>
+<span class="sd">            a 2D point which specifies the start of the line</span>
+<span class="sd">        direction : numpy array</span>
+<span class="sd">            a normalized vector specifiying the direction of the line</span>
+<span class="sd">        length : scalar</span>
+<span class="sd">            a scalar specifiying the maximum length of the line</span>
+<span class="sd">        iterations : scalar</span>
+<span class="sd">            the number of iterations for the ray marching algorithm used</span>
+<span class="sd">        precision : scalar</span>
+<span class="sd">            the precision with which the intersection is being calculated</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy array</span>
+<span class="sd">            2D position of the intersection</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">touched</span>  <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="n">shortest_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortest_distance</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="n">position</span>      <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">shortest_dist</span><span class="o">*</span><span class="n">direction</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">shortest_dist</span> <span class="o">&lt;=</span> <span class="n">precision</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">position</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">length</span><span class="p">:</span>
+                <span class="k">break</span>
+            
+        <span class="k">return</span> <span class="n">position</span></div>
+
+<div class="viewcode-block" id="game_object.get_position"><a class="viewcode-back" href="../index.html#rogata_library.game_object.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns the position of the objects center</span>
+
+<span class="sd">        The center in this case refers to the mean position of the object.</span>
+<span class="sd">        For a disjointed area this center can be outside of the object itself.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy array</span>
+<span class="sd">            2D position of the objects center</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cx</span>   <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cy</span>   <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">contours</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">:</span>
+            <span class="n">moments</span>  <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">moments</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
+            <span class="n">cx</span>   <span class="o">=</span> <span class="n">cx</span>   <span class="o">+</span> <span class="n">moments</span><span class="p">[</span><span class="s1">&#39;m10&#39;</span><span class="p">]</span>
+            <span class="n">cy</span>   <span class="o">=</span> <span class="n">cy</span>   <span class="o">+</span> <span class="n">moments</span><span class="p">[</span><span class="s1">&#39;m01&#39;</span><span class="p">]</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">moments</span><span class="p">[</span><span class="s1">&#39;m00&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="o">/</span><span class="n">size</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="o">/</span><span class="n">size</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="game_object.move_object"><a class="viewcode-back" href="../index.html#rogata_library.game_object.move_object">[docs]</a>    <span class="k">def</span> <span class="nf">move_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_pos</span><span class="p">,</span><span class="n">rotate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;moves the object to a new position and orientation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_pos : numpy array</span>
+<span class="sd">            new 2D position of the object</span>
+<span class="sd">        rotate : scalar</span>
+<span class="sd">            angle of rotation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_center</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">current_center</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)):</span>
+            <span class="n">centered_contour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">current_center</span>
+            <span class="c1">#TODO rotation of contour goes here. Uses polar conversion</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">centered_contour</span><span class="o">+</span><span class="n">new_pos</span></div></div>
+
+<span class="k">class</span> <span class="nc">dynamic_object</span><span class="p">(</span><span class="n">game_object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">position</span><span class="p">,</span><span class="n">hitbox</span><span class="p">):</span>
+        <span class="c1">#have marker ID OR Color, use move_object function to move</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">class</span> <span class="nc">scene</span><span class="p">():</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">game_object_list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">for</span> <span class="n">objects</span> <span class="ow">in</span> <span class="n">game_object_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">objects</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">=</span> <span class="n">objects</span>
+
+        <span class="n">pos_serv</span>    <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;get_position&#39;</span><span class="p">,</span><span class="n">RequestPos</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_get_position</span><span class="p">)</span>
+        <span class="n">dist_serv</span>   <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;get_distance&#39;</span><span class="p">,</span><span class="n">RequestDist</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_get_distance</span><span class="p">)</span>
+        <span class="n">inters_serv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="s1">&#39;intersect_line&#39;</span><span class="p">,</span><span class="n">RequestInter</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_line_intersect</span><span class="p">)</span>
+        <span class="n">inside_serv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;check_inside&#39;</span><span class="p">,</span><span class="n">CheckInside</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_inside_check</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">handle_get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
+        <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reqest</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+        <span class="n">pos</span>            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">choosen_object</span><span class="p">]</span><span class="o">.</span><span class="n">get_position</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RequestPosResponse</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">handle_line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
+        <span class="n">origin</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">direction</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">theta</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">theta</span><span class="p">)])</span>
+        <span class="n">length</span>         <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">length</span>
+        <span class="n">intersect</span>      <span class="o">=</span> <span class="n">choosen_object</span><span class="o">.</span><span class="n">line_intersect</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RequestInterResponse</span><span class="p">(</span><span class="n">intersect</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">intersect</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">handle_get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
+        <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reqest</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+        <span class="n">dist</span>           <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">choosen_object</span><span class="p">]</span><span class="o">.</span><span class="n">shortest_distance</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RequestDistResponse</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_inside_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
+        <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reqest</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+        <span class="n">inside</span>         <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">choosen_object</span><span class="o">.</span><span class="n">is_inside</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CheckInsideResponse</span><span class="p">(</span><span class="n">inside</span><span class="p">)</span>
+
+    
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Jan Baumgärtner.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
