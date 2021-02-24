@@ -27,6 +27,10 @@ class game_object:
         calculates the shortest distance between the point and the border of the object
     line_intersect(start,direction,length,iterations=100,precision=0.01)
         calculates the intersection between a line and the border of the object
+    get_position()
+        returns the position of the objects center
+    move_object(new_position,new_ori)
+        moves the object to a new position and orientation
     """
 
 
@@ -115,11 +119,34 @@ class game_object:
         return min_dist
 
     def line_intersect(self,start,direction,length,iterations=100,precision=0.01):
+        """calculates the intersection between a line and the border of the object
+
+        Iterations and precision are kept at standart values if non are provided
+        
+        Parameters
+        ----------
+        start : numpy array
+            a 2D point which specifies the start of the line
+        direction : numpy array
+            a normalized vector specifiying the direction of the line
+        length : scalar
+            a scalar specifiying the maximum length of the line
+        iterations : scalar
+            the number of iterations for the ray marching algorithm used
+        precision : scalar
+            the precision with which the intersection is being calculated
+
+        Returns
+        -------
+        numpy array
+            2D position of the intersection
+
+        """
         touched  = False
         position = start
         for k in  range(iterations):
             shortest_dist = self.shortest_distance(position)
-            position      = position + shortest_dist*direction
+            position      = position + shortest_dist*direction/np.linalg.norm(direction)
 
             if shortest_dist <= precision or np.linalg.norm(position-start) >= length:
                 break
@@ -127,6 +154,16 @@ class game_object:
         return position
 
     def get_position(self):
+        """returns the position of the objects center
+
+        The center in this case refers to the mean position of the object.
+        For a disjointed area this center can be outside of the object itself.
+
+        Returns
+        -------
+        numpy array
+            2D position of the objects center
+        """
         cx   = 0
         cy   = 0
         size = 0
@@ -137,14 +174,22 @@ class game_object:
             size = size + moments['m00']
         return np.array([int(cx/size),int(cy/size)])
 
-    def move_object(self,new_pos,new_ori=0):
+    def move_object(self,new_pos,rotate=0):
+        """moves the object to a new position and orientation
+
+        Parameters
+        ----------
+        new_pos : numpy array
+            new 2D position of the object
+        rotate : scalar
+            angle of rotation
+        """
         current_center   = self.get_position()
         print(current_center)
         for i in range(len(self.area)):
             centered_contour = self.area[i] - current_center
             #TODO rotation of contour goes here. Uses polar conversion
             self.area[i]=centered_contour+new_pos
-        return 0
 
 class dynamic_object(game_object):
     def __init__(self,name,position,hitbox):
