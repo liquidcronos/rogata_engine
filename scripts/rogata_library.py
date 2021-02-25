@@ -238,4 +238,98 @@ class scene():
         return CheckInsideResponse(inside)
 
     
+def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
+    """Detects the contour of an object containing a marker based on color
+
+    It always returns the smallest contour which still contains the marker
+    The contour is detected using an image with hsv color space to be robust under different lighting conditions.
+    If draw=True the systems draws all found contours as well as the current smalles one containing the marker onto hsv_img
+    
+
+    Parameters
+    ----------
+    hsv_image : numpy array
+        a Image in hsv color space in which the contours  should be detected
+    lower_color : numpy array
+        a 3x1 array containing the lower boundary for the color detection
+    upper_color : numpy array
+        a 3x1 array containing the upper boundary for the color detection
+    marker_id : scalar
+        the ID of a 4x4 aruco marker which identifies the object
+
+
+    Returns
+    -------
+
+    """
+
+    # color detection
+    if lower_color[0] <=0:
+        second_lower    = lower_color
+        second_lower[0] = 179+lower_color[0]
+        second_upper    = upper_color
+        second_upper[0] = 179
+
+        lower_color[0] = 0
+        
+        mask1 =cv2.inRange(hsv_img,lower_color,upper_color)
+        mask2 =cv2.inRange(hsv_img,second_lower,second_upper)
+        mask= mask1 | mask2
+    else:
+        mask =cv2.inRange(hsv_img,lower_color,upper_color)
+
+    #TODO carefull depending on opencv version the return may be different
+    _,contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    
+
+    #marker detection:
+    gray       = cv2.cvtColor(hsv_img,cv2.COLOR_BGR2GRAY)
+    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
+    parameters = aruco.DetectorParameters_create()
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
+    
+    if draw == True:
+        cv2.drawContours(hsv_img, contours, -1, (0,255,255),3)
+    try:
+        if ids.any() == None:
+            return None
+    except:
+        print("No Markers in this Image.")
+        print("Without Markers the Calibration can not be performed")
+        return None
+    if marker_id not in ids:
+        return None
+    else:
+        indice=np.where(ids == marker_id)
+        center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
+
+
+    if draw == True:
+        cv2.circle(hsv_img,(center[0],center[1]),7,(90,255,255),7)
+
+    #TODO smallest contour should be real contour encompassing whole image
+    row, col =hsv_img.shape[:2]
+    smallest_contour = np.array([[0,0],[0,row],[col,row],[col,0]])
+    #TODO not needet with real contour
+    contour_found    = 0
+    for i in range(len(contours)):
+        marker_in_contour = True
+
+        for elements in corners[indice[0][0]][indice[1][0]]:
+            marker_in_contour = marker_in_contour and cv2.pointPolygonTest(contours[i],tuple(elements),False) > 0
+        marker_in_contour = marker_in_contour and cv2.contourArea(contours[i]) >= min_size
+        if  marker_in_contour:
+            if cv2.contourArea(contours[i]) <= cv2.contourArea(smallest_contour):
+                contour_found = 1
+                smallest_contour = contours[i]
+
+    if contour_found == 1:
+        if draw == True:
+            cv2.drawContours(hsv_img, smallest_contour, -1, (90,255,255),6)
+        return smallest_contour
+
+    return None
+
+
 
