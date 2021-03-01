@@ -80,8 +80,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="simple">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../how_it_works.html">How it Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_docu.html">Code Documentation</a></li>
 </ul>
 
             
@@ -133,7 +135,7 @@
 <span class="kn">import</span> <span class="nn">rospy</span>
 <span class="kn">from</span> <span class="nn">rogata_engine.srv</span> <span class="kn">import</span> <span class="o">*</span>
 
-<div class="viewcode-block" id="game_object"><a class="viewcode-back" href="../index.html#rogata_library.game_object">[docs]</a><span class="k">class</span> <span class="nc">game_object</span><span class="p">:</span>
+<div class="viewcode-block" id="game_object"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object">[docs]</a><span class="k">class</span> <span class="nc">game_object</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class defining the most basic game objects of the engine</span>
 
@@ -182,7 +184,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="o">=</span><span class="n">hole_spec</span>
 
 
-<div class="viewcode-block" id="game_object.is_inside"><a class="viewcode-back" href="../index.html#rogata_library.game_object.is_inside">[docs]</a>    <span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
+<div class="viewcode-block" id="game_object.is_inside"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.is_inside">[docs]</a>    <span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks wheter a point is inside the area of the object</span>
 
 <span class="sd">        A point directl on the border is also considered inside</span>
@@ -225,7 +227,7 @@
 
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">inside</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="game_object.shortest_distance"><a class="viewcode-back" href="../index.html#rogata_library.game_object.shortest_distance">[docs]</a>    <span class="k">def</span> <span class="nf">shortest_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
+<div class="viewcode-block" id="game_object.shortest_distance"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.shortest_distance">[docs]</a>    <span class="k">def</span> <span class="nf">shortest_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;calculates the shortest distance between the point and the border of the object</span>
 
 <span class="sd">        Also returns a positive distance when inside the object</span>
@@ -247,7 +249,7 @@
             <span class="n">min_dist</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">point</span><span class="p">,</span><span class="bp">True</span><span class="p">)),</span><span class="n">min_dist</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">min_dist</span></div>
 
-<div class="viewcode-block" id="game_object.line_intersect"><a class="viewcode-back" href="../index.html#rogata_library.game_object.line_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">,</span><span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">precision</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<div class="viewcode-block" id="game_object.line_intersect"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.line_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">,</span><span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">precision</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;calculates the intersection between a line and the border of the object</span>
 
 <span class="sd">        Iterations and precision are kept at standart values if non are provided</span>
@@ -282,7 +284,7 @@
             
         <span class="k">return</span> <span class="n">position</span></div>
 
-<div class="viewcode-block" id="game_object.get_position"><a class="viewcode-back" href="../index.html#rogata_library.game_object.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="game_object.get_position"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns the position of the objects center</span>
 
 <span class="sd">        The center in this case refers to the mean position of the object.</span>
@@ -303,7 +305,7 @@
             <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">moments</span><span class="p">[</span><span class="s1">&#39;m00&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="o">/</span><span class="n">size</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="o">/</span><span class="n">size</span><span class="p">)])</span></div>
 
-<div class="viewcode-block" id="game_object.move_object"><a class="viewcode-back" href="../index.html#rogata_library.game_object.move_object">[docs]</a>    <span class="k">def</span> <span class="nf">move_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_pos</span><span class="p">,</span><span class="n">rotate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="game_object.move_object"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.move_object">[docs]</a>    <span class="k">def</span> <span class="nf">move_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_pos</span><span class="p">,</span><span class="n">rotate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;moves the object to a new position and orientation</span>
 
 <span class="sd">        Parameters</span>
@@ -367,6 +369,100 @@
         <span class="k">return</span> <span class="n">CheckInsideResponse</span><span class="p">(</span><span class="n">inside</span><span class="p">)</span>
 
     
+<div class="viewcode-block" id="detect_area"><a class="viewcode-back" href="../code_docu.html#rogata_library.detect_area">[docs]</a><span class="k">def</span> <span class="nf">detect_area</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span><span class="n">lower_color</span><span class="p">,</span><span class="n">upper_color</span><span class="p">,</span><span class="n">marker_id</span><span class="p">,</span><span class="n">min_size</span><span class="p">,</span><span class="n">draw</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detects the contour of an object containing a marker based on color</span>
+
+<span class="sd">    It always returns the smallest contour which still contains the marker</span>
+<span class="sd">    The contour is detected using an image with hsv color space to be robust under different lighting conditions.</span>
+<span class="sd">    If draw=True the systems draws all found contours as well as the current smalles one containing the marker onto hsv_img</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hsv_image : numpy array</span>
+<span class="sd">        a Image in hsv color space in which the contours  should be detected</span>
+<span class="sd">    lower_color : numpy array</span>
+<span class="sd">        a 3x1 array containing the lower boundary for the color detection</span>
+<span class="sd">    upper_color : numpy array</span>
+<span class="sd">        a 3x1 array containing the upper boundary for the color detection</span>
+<span class="sd">    marker_id : scalar</span>
+<span class="sd">        the ID of a 4x4 aruco marker which identifies the object</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># color detection</span>
+    <span class="k">if</span> <span class="n">lower_color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">second_lower</span>    <span class="o">=</span> <span class="n">lower_color</span>
+        <span class="n">second_lower</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">179</span><span class="o">+</span><span class="n">lower_color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">second_upper</span>    <span class="o">=</span> <span class="n">upper_color</span>
+        <span class="n">second_upper</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">179</span>
+
+        <span class="n">lower_color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">mask1</span> <span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span><span class="n">lower_color</span><span class="p">,</span><span class="n">upper_color</span><span class="p">)</span>
+        <span class="n">mask2</span> <span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span><span class="n">second_lower</span><span class="p">,</span><span class="n">second_upper</span><span class="p">)</span>
+        <span class="n">mask</span><span class="o">=</span> <span class="n">mask1</span> <span class="o">|</span> <span class="n">mask2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span><span class="n">lower_color</span><span class="p">,</span><span class="n">upper_color</span><span class="p">)</span>
+
+    <span class="c1">#TODO carefull depending on opencv version the return may be different</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">contours</span><span class="p">,</span> <span class="n">hierachy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_TREE</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+
+    
+
+    <span class="c1">#marker detection:</span>
+    <span class="n">gray</span>       <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+    <span class="n">aruco_dict</span> <span class="o">=</span> <span class="n">aruco</span><span class="o">.</span><span class="n">Dictionary_get</span><span class="p">(</span><span class="n">aruco</span><span class="o">.</span><span class="n">DICT_4X4_250</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">aruco</span><span class="o">.</span><span class="n">DetectorParameters_create</span><span class="p">()</span>
+    <span class="n">corners</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">rejectedImgPoints</span> <span class="o">=</span> <span class="n">aruco</span><span class="o">.</span><span class="n">detectMarkers</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">aruco_dict</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">marker_id</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">draw</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">drawContours</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ids</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No Markers in this Image.&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Without Markers the Calibration can not be performed&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">marker_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">indice</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ids</span> <span class="o">==</span> <span class="n">marker_id</span><span class="p">)</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">corners</span><span class="p">[</span><span class="n">indice</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">indice</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span>
+
+
+    <span class="k">if</span> <span class="n">draw</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="mi">7</span><span class="p">,(</span><span class="mi">90</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span><span class="mi">7</span><span class="p">)</span>
+
+    <span class="c1">#TODO smallest contour should be real contour encompassing whole image</span>
+    <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span><span class="n">hsv_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">smallest_contour</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">row</span><span class="p">],[</span><span class="n">col</span><span class="p">,</span><span class="n">row</span><span class="p">],[</span><span class="n">col</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="c1">#TODO not needet with real contour</span>
+    <span class="n">contour_found</span>    <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">contours</span><span class="p">)):</span>
+        <span class="n">marker_in_contour</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">for</span> <span class="n">elements</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">[</span><span class="n">indice</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">indice</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]:</span>
+            <span class="n">marker_in_contour</span> <span class="o">=</span> <span class="n">marker_in_contour</span> <span class="ow">and</span> <span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="nb">tuple</span><span class="p">(</span><span class="n">elements</span><span class="p">),</span><span class="bp">False</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">marker_in_contour</span> <span class="o">=</span> <span class="n">marker_in_contour</span> <span class="ow">and</span> <span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">min_size</span>
+        <span class="k">if</span>  <span class="n">marker_in_contour</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">smallest_contour</span><span class="p">):</span>
+                <span class="n">contour_found</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">smallest_contour</span> <span class="o">=</span> <span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">contour_found</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">draw</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">drawContours</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span> <span class="n">smallest_contour</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span><span class="mi">6</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">smallest_contour</span>
+
+    <span class="k">return</span> <span class="bp">None</span></div>
+
+
 
 </pre></div>
 

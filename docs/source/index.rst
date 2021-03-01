@@ -3,20 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to RoGaTa Engine's documentation!
-=========================================
-
-Contents:
+RoGaTa Engine Documentation
+***************************
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-    
-Code Documentation
-==================
+   
+    how_it_works
+    usage
+    code_docu
 
-.. automodule:: rogata_library
-   :members:
+
 
 
 Indices and tables

@@ -1,0 +1,6 @@
+string object
+geometry_msgs/Pose2D line
+float64 length
+---
+float64 x
+float64 y
