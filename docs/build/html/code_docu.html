@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="RoGaTa Engine 1.0 documentation" href="index.html"/>
-        <link rel="prev" title="Getting Started" href="usage.html"/> 
+        <link rel="prev" title="Tutorials" href="tutorials.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -81,8 +81,10 @@
             
             
                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="what_is_rogata.html">What is the RoGaTa Engine?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">How it Works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Code Documentation</a><ul class="simple">
 </ul>
 </li>
@@ -150,6 +152,9 @@ If draw=True the systems draws all found contours as well as the current smalles
 <li><strong>lower_color</strong> (<em>numpy array</em>) &#8211; a 3x1 array containing the lower boundary for the color detection</li>
 <li><strong>upper_color</strong> (<em>numpy array</em>) &#8211; a 3x1 array containing the upper boundary for the color detection</li>
 <li><strong>marker_id</strong> (<em>scalar</em>) &#8211; the ID of a 4x4 aruco marker which identifies the object</li>
+<li><strong>hsv_img</strong> &#8211; </li>
+<li><strong>min_size</strong> &#8211; </li>
+<li><strong>draw</strong> &#8211; (Default value = False)</li>
 </ul>
 </td>
 </tr>
@@ -158,64 +163,30 @@ If draw=True the systems draws all found contours as well as the current smalles
 </dd></dl>
 
 <dl class="class">
+<dt id="rogata_library.dynamic_object">
+<em class="property">class </em><code class="descclassname">rogata_library.</code><code class="descname">dynamic_object</code><span class="sig-paren">(</span><em>name</em>, <em>position</em>, <em>hitbox</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#dynamic_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.dynamic_object" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
 <dt id="rogata_library.game_object">
-<em class="property">class </em><code class="descclassname">rogata_library.</code><code class="descname">game_object</code><span class="sig-paren">(</span><em>name</em>, <em>contour_array</em>, <em>hole_spec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">rogata_library.</code><code class="descname">game_object</code><span class="sig-paren">(</span><em>name</em>, <em>area</em>, <em>holes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class defining the most basic game objects of the engine</p>
-<p>...</p>
-<dl class="attribute">
-<dt id="rogata_library.game_object.name">
-<code class="descname">name</code><a class="headerlink" href="#rogata_library.game_object.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em></p>
-<p>the name of the object</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="rogata_library.game_object.area">
-<code class="descname">area</code><a class="headerlink" href="#rogata_library.game_object.area" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>array</em></p>
-<p>array containing all borders of the object</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="rogata_library.game_object.holes">
-<code class="descname">holes</code><a class="headerlink" href="#rogata_library.game_object.holes" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>array</em></p>
-<p>array specifying witch border constitues a hole and which an outer border</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="rogata_library.game_object.is_inside">
-<code class="descname">is_inside</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.is_inside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.is_inside" title="Permalink to this definition">¶</a></dt>
-<dd><p>checks wheter a point is inside the area of the object</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="rogata_library.game_object.shortest_distance">
-<code class="descname">shortest_distance</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.shortest_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.shortest_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculates the shortest distance between the point and the border of the object</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="rogata_library.game_object.line_intersect">
-<code class="descname">line_intersect</code><span class="sig-paren">(</span><em>start</em>, <em>direction</em>, <em>length</em>, <em>iterations=100</em>, <em>precision=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.line_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.line_intersect" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculates the intersection between a line and the border of the object</p>
-</dd></dl>
-
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; The name of the object</li>
+<li><strong>area</strong> (<em>numpy array</em>) &#8211; A array containin all borders of the object as a <cite>contour &lt;https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html&gt;</cite></li>
+<li><strong>holes</strong> (<em>numpy array</em>) &#8211; Array specifying which border constitutes a inner or outer border</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="rogata_library.game_object.get_position">
 <code class="descname">get_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.get_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.get_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the position of the objects center</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="rogata_library.game_object.move_object">
-<code class="descname">move_object</code><span class="sig-paren">(</span><em>new_position</em>, <em>new_ori</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.move_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.move_object" title="Permalink to this definition">¶</a></dt>
-<dd><p>moves the object to a new position and orientation</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">get_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.get_position"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>returns the position of the objects center</p>
 <p>The center in this case refers to the mean position of the object.
 For a disjointed area this center can be outside of the object itself.</p>
@@ -232,15 +203,15 @@ For a disjointed area this center can be outside of the object itself.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descname">is_inside</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.is_inside"><span class="viewcode-link">[source]</span></a></dt>
+<dt id="rogata_library.game_object.is_inside">
+<code class="descname">is_inside</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.is_inside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.is_inside" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks wheter a point is inside the area of the object</p>
 <p>A point directl on the border is also considered inside</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>point</strong> (<em>numpy array</em>) &#8211; A 2D point which is to be checked</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>point</strong> (<em>2D numpy array</em>) &#8211; A point which is to be checked</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a truthvalue indicating wheter or not the point  is inside the game object</td>
 </tr>
@@ -251,8 +222,8 @@ For a disjointed area this center can be outside of the object itself.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descname">line_intersect</code><span class="sig-paren">(</span><em>start</em>, <em>direction</em>, <em>length</em>, <em>iterations=100</em>, <em>precision=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.line_intersect"><span class="viewcode-link">[source]</span></a></dt>
+<dt id="rogata_library.game_object.line_intersect">
+<code class="descname">line_intersect</code><span class="sig-paren">(</span><em>start</em>, <em>direction</em>, <em>length</em>, <em>iterations=100</em>, <em>precision=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.line_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.line_intersect" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculates the intersection between a line and the border of the object</p>
 <p>Iterations and precision are kept at standart values if non are provided</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -263,8 +234,8 @@ For a disjointed area this center can be outside of the object itself.</p>
 <li><strong>start</strong> (<em>numpy array</em>) &#8211; a 2D point which specifies the start of the line</li>
 <li><strong>direction</strong> (<em>numpy array</em>) &#8211; a normalized vector specifiying the direction of the line</li>
 <li><strong>length</strong> (<em>scalar</em>) &#8211; a scalar specifiying the maximum length of the line</li>
-<li><strong>iterations</strong> (<em>scalar</em>) &#8211; the number of iterations for the ray marching algorithm used</li>
-<li><strong>precision</strong> (<em>scalar</em>) &#8211; the precision with which the intersection is being calculated</li>
+<li><strong>iterations</strong> (<em>scalar</em>) &#8211; the number of iterations for the ray marching algorithm used (Default value = 100)</li>
+<li><strong>precision</strong> (<em>scalar</em>) &#8211; the precision with which the intersection is being calculated (Default value = 0.001)</li>
 </ul>
 </td>
 </tr>
@@ -279,8 +250,8 @@ For a disjointed area this center can be outside of the object itself.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descname">move_object</code><span class="sig-paren">(</span><em>new_pos</em>, <em>rotate=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.move_object"><span class="viewcode-link">[source]</span></a></dt>
+<dt id="rogata_library.game_object.move_object">
+<code class="descname">move_object</code><span class="sig-paren">(</span><em>new_pos</em>, <em>rotate=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.move_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.move_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>moves the object to a new position and orientation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -288,7 +259,7 @@ For a disjointed area this center can be outside of the object itself.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>new_pos</strong> (<em>numpy array</em>) &#8211; new 2D position of the object</li>
-<li><strong>rotate</strong> (<em>scalar</em>) &#8211; angle of rotation</li>
+<li><strong>rotate</strong> (<em>scalar</em>) &#8211; angle of rotation (Default value = 0)</li>
 </ul>
 </td>
 </tr>
@@ -297,8 +268,8 @@ For a disjointed area this center can be outside of the object itself.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descname">shortest_distance</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.shortest_distance"><span class="viewcode-link">[source]</span></a></dt>
+<dt id="rogata_library.game_object.shortest_distance">
+<code class="descname">shortest_distance</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#game_object.shortest_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.game_object.shortest_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculates the shortest distance between the point and the border of the object</p>
 <p>Also returns a positive distance when inside the object</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -310,6 +281,150 @@ For a disjointed area this center can be outside of the object itself.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">distance to border of the object</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">scalar</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rogata_library.rogata_helper">
+<em class="property">class </em><code class="descclassname">rogata_library.</code><code class="descname">rogata_helper</code><a class="reference internal" href="_modules/rogata_library.html#rogata_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.rogata_helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for people unfarmiliar with ROS.</p>
+<p>It abstracts the ROS service communication with the <a class="reference internal" href="#rogata_library.scene" title="rogata_library.scene"><code class="xref py py-class docutils literal"><span class="pre">scene</span></code></a> class into simply python functions.</p>
+<dl class="method">
+<dt id="rogata_library.rogata_helper.dist">
+<code class="descname">dist</code><span class="sig-paren">(</span><em>game_object</em>, <em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#rogata_helper.dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.rogata_helper.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstracts the <code class="docutils literal"><span class="pre">get_distance</span></code> ROS service communication to get the distance between a <a class="reference internal" href="#rogata_library.game_object" title="rogata_library.game_object"><code class="xref py py-class docutils literal"><span class="pre">game_object</span></code></a> and a point</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>game_object</strong> (<em>string</em>) &#8211; The name of the game object whoose distance should be measured</li>
+<li><strong>point</strong> (<em>2D numpy array</em>) &#8211; the point to which the distance should be measured</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rogata_library.rogata_helper.inside">
+<code class="descname">inside</code><span class="sig-paren">(</span><em>game_object</em>, <em>point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#rogata_helper.inside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.rogata_helper.inside" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstracts the <code class="docutils literal"><span class="pre">check_inside</span></code> Ros Service communication to check wheter a given point is inside of a <a class="reference internal" href="#rogata_library.game_object" title="rogata_library.game_object"><code class="xref py py-class docutils literal"><span class="pre">game_object</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>game_object</strong> (<em>string</em>) &#8211; the name of the game object to check</li>
+<li><strong>point</strong> (<em>2D numpy array</em>) &#8211; The point to check</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rogata_library.rogata_helper.intersect">
+<code class="descname">intersect</code><span class="sig-paren">(</span><em>game_object</em>, <em>start_point</em>, <em>direction</em>, <em>length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#rogata_helper.intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.rogata_helper.intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstracts the <code class="docutils literal"><span class="pre">intersect_line</span></code> ROS service communication to get the intersection between a <a class="reference internal" href="#rogata_library.game_object" title="rogata_library.game_object"><code class="xref py py-class docutils literal"><span class="pre">game_object</span></code></a> and a line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>game_object</strong> (<em>string</em>) &#8211; The name of the game object to intersect with</li>
+<li><strong>start_point</strong> (<em>2D numpy array</em>) &#8211; The start of the line</li>
+<li><strong>direction</strong> (<em>scalar</em>) &#8211; The direction of the line as an angle following ROS convetion</li>
+<li><strong>length</strong> (<em>scalar</em>) &#8211; The length of the line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rogata_library.rogata_helper.set_pos">
+<code class="descname">set_pos</code><span class="sig-paren">(</span><em>game_object</em>, <em>position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#rogata_helper.set_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.rogata_helper.set_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstracts the <code class="docutils literal"><span class="pre">set_position</span></code> ROS service communication to set the position of a <a class="reference internal" href="#rogata_library.game_object" title="rogata_library.game_object"><code class="xref py py-class docutils literal"><span class="pre">game_object</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>game_object</strong> (<em>string</em>) &#8211; The name of the game object</li>
+<li><strong>position</strong> (<em>2D numpy array</em>) &#8211; The new position of the object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rogata_library.scene">
+<em class="property">class </em><code class="descclassname">rogata_library.</code><code class="descname">scene</code><span class="sig-paren">(</span><em>game_object_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#scene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class implemennting scene objects comprised of multiple <a class="reference internal" href="#rogata_library.game_object" title="rogata_library.game_object"><code class="xref py py-class docutils literal"><span class="pre">game_object</span></code></a> objects.
+It offers Ros Client interfaces which allow other nodes to request information about the game objects.</p>
+<dl class="method">
+<dt id="rogata_library.scene.handle_get_distance">
+<code class="descname">handle_get_distance</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#scene.handle_get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.scene.handle_get_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles requests to the <code class="docutils literal"><span class="pre">get_distance</span></code> ROS service server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>RequestDistRequest</em>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rogata_library.scene.handle_inside_check">
+<code class="descname">handle_inside_check</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#scene.handle_inside_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.scene.handle_inside_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles requests to the <code class="docutils literal"><span class="pre">check_inside</span></code> ROS service server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>CheckInsideRequest</em>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rogata_library.scene.handle_line_intersect">
+<code class="descname">handle_line_intersect</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#scene.handle_line_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.scene.handle_line_intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles requests to  the <code class="docutils literal"><span class="pre">intersect_line</span></code> ROS service server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>RequestInterRequest</em>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rogata_library.scene.handle_set_position">
+<code class="descname">handle_set_position</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rogata_library.html#scene.handle_set_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rogata_library.scene.handle_set_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles requests to the <code class="docutils literal"><span class="pre">set_position</span></code> ROS service server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>SetPosRequest</em>) &#8211; </td>
 </tr>
 </tbody>
 </table>
@@ -337,7 +452,7 @@ Since this can sometimes lead to the contour being the outline of the marker, th
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="usage.html" class="btn btn-neutral" title="Getting Started" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tutorials.html" class="btn btn-neutral" title="Tutorials" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

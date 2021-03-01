@@ -7,9 +7,11 @@ RoGaTa Engine Documentation
 ***************************
 
 .. toctree::
-   
+  
+    what_is_rogata
     how_it_works
     usage
+    tutorials
     code_docu
 
 

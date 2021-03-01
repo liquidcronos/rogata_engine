@@ -24,7 +24,7 @@ sys.setrecursionlimit(1500)
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+needs_sphinx = '1.4.3'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -160,7 +160,7 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = {'**':['index.html','usage.html','code_doc.html']}
+#html_sidebars = {'**':['index.html','usage.html','code_doc.html']}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

@@ -81,8 +81,10 @@
             
             
                 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../what_is_rogata.html">What is the RoGaTa Engine?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how_it_works.html">How it Works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../code_docu.html">Code Documentation</a></li>
 </ul>
 
@@ -134,71 +136,36 @@
 <span class="kn">import</span> <span class="nn">cv2.aruco</span> <span class="kn">as</span> <span class="nn">aruco</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
 <span class="kn">from</span> <span class="nn">rogata_engine.srv</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="kn">import</span> <span class="n">Pose2D</span>
 
 <div class="viewcode-block" id="game_object"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object">[docs]</a><span class="k">class</span> <span class="nc">game_object</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class defining the most basic game objects of the engine</span>
-
-<span class="sd">    ...</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        the name of the object</span>
-<span class="sd">    area :  array</span>
-<span class="sd">        array containing all borders of the object</span>
-<span class="sd">    holes : array</span>
-<span class="sd">        array specifying witch border constitues a hole and which an outer border</span>
-
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
-<span class="sd">    is_inside(point)</span>
-<span class="sd">        checks wheter a point is inside the area of the object</span>
-<span class="sd">    shortest_distance(point)</span>
-<span class="sd">        calculates the shortest distance between the point and the border of the object</span>
-<span class="sd">    line_intersect(start,direction,length,iterations=100,precision=0.01)</span>
-<span class="sd">        calculates the intersection between a line and the border of the object</span>
-<span class="sd">    get_position()</span>
-<span class="sd">        returns the position of the objects center</span>
-<span class="sd">    move_object(new_position,new_ori)</span>
-<span class="sd">        moves the object to a new position and orientation</span>
+    <span class="sd">&quot;&quot;&quot;A class defining the most basic game objects of the engine</span>
+<span class="sd">    </span>
+<span class="sd">    :param string name: The name of the object</span>
+<span class="sd">    :param area: A array containin all borders of the object as a `contour &lt;https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html&gt;`</span>
+<span class="sd">    :type area: numpy array</span>
+<span class="sd">    :param holes: Array specifying which border constitutes a inner or outer border</span>
+<span class="sd">    :type holes: numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">holes</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">contour_array</span><span class="p">,</span><span class="n">hole_spec</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name : str</span>
-<span class="sd">            the name of the object</span>
-<span class="sd">        area :  array</span>
-<span class="sd">            array containing all borders of the object</span>
-<span class="sd">        holes : array</span>
-<span class="sd">            array specifying witch border constitues a hole and which an outer border</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-
-        <span class="c1">#TODO input validation: hole_spec should have length of contour array</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="o">=</span><span class="n">contour_array</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="o">=</span><span class="n">hole_spec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="o">=</span><span class="n">area</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="o">=</span><span class="n">holes</span>
 
 
 <div class="viewcode-block" id="game_object.is_inside"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.is_inside">[docs]</a>    <span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks wheter a point is inside the area of the object</span>
-
+<span class="sd">        </span>
 <span class="sd">        A point directl on the border is also considered inside</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        point : numpy array</span>
-<span class="sd">            A 2D point which is to be checked</span>
+<span class="sd">        :param point: A point which is to be checked</span>
+<span class="sd">        :type point: 2D numpy array</span>
+<span class="sd">        :returns: a truthvalue indicating wheter or not the point  is inside the game object</span>
+<span class="sd">        :rtype: bool</span>
 
 <span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        bool </span>
-<span class="sd">            a truthvalue indicating wheter or not the point  is inside the game object </span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
 
@@ -208,7 +175,6 @@
         <span class="n">inside_contour</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)):</span>
             <span class="n">inside_contour</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">point</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">inside_contour</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="n">inside</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">)),</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
@@ -229,18 +195,15 @@
 
 <div class="viewcode-block" id="game_object.shortest_distance"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.shortest_distance">[docs]</a>    <span class="k">def</span> <span class="nf">shortest_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;calculates the shortest distance between the point and the border of the object</span>
-
+<span class="sd">        </span>
 <span class="sd">        Also returns a positive distance when inside the object</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        point : numpy array</span>
-<span class="sd">            A 2D point which is to be checked</span>
+<span class="sd">        :param point: A 2D point which is to be checked</span>
+<span class="sd">        :type point: numpy array</span>
+<span class="sd">        :returns: distance to border of the object</span>
+<span class="sd">        :rtype: scalar</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        scalar</span>
-<span class="sd">            distance to border of the object</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">point</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
@@ -249,51 +212,52 @@
             <span class="n">min_dist</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">point</span><span class="p">,</span><span class="bp">True</span><span class="p">)),</span><span class="n">min_dist</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">min_dist</span></div>
 
-<div class="viewcode-block" id="game_object.line_intersect"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.line_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">,</span><span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">precision</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<div class="viewcode-block" id="game_object.line_intersect"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.line_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">,</span><span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">precision</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;calculates the intersection between a line and the border of the object</span>
-
-<span class="sd">        Iterations and precision are kept at standart values if non are provided</span>
 <span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        start : numpy array</span>
-<span class="sd">            a 2D point which specifies the start of the line</span>
-<span class="sd">        direction : numpy array</span>
-<span class="sd">            a normalized vector specifiying the direction of the line</span>
-<span class="sd">        length : scalar</span>
-<span class="sd">            a scalar specifiying the maximum length of the line</span>
-<span class="sd">        iterations : scalar</span>
-<span class="sd">            the number of iterations for the ray marching algorithm used</span>
-<span class="sd">        precision : scalar</span>
-<span class="sd">            the precision with which the intersection is being calculated</span>
+<span class="sd">        Iterations and precision are kept at standart values if non are provided</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        numpy array</span>
-<span class="sd">            2D position of the intersection</span>
+<span class="sd">        :param start: a 2D point which specifies the start of the line</span>
+<span class="sd">        :type start: numpy array</span>
+<span class="sd">        :param direction: a normalized vector specifiying the direction of the line</span>
+<span class="sd">        :type direction: numpy array</span>
+<span class="sd">        :param length: a scalar specifiying the maximum length of the line</span>
+<span class="sd">        :type length: scalar</span>
+<span class="sd">        :param iterations: the number of iterations for the ray marching algorithm used (Default value = 100)</span>
+<span class="sd">        :type iterations: scalar</span>
+<span class="sd">        :param precision: the precision with which the intersection is being calculated (Default value = 0.001)</span>
+<span class="sd">        :type precision: scalar</span>
+<span class="sd">        :returns: 2D position of the intersection</span>
+<span class="sd">        :rtype: numpy array</span>
 
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">touched</span>  <span class="o">=</span> <span class="bp">False</span>
         <span class="n">position</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="n">default</span>  <span class="o">=</span> <span class="n">start</span><span class="o">+</span><span class="n">length</span><span class="o">*</span><span class="n">direction</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
             <span class="n">shortest_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortest_distance</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
             <span class="n">position</span>      <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">shortest_dist</span><span class="o">*</span><span class="n">direction</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">shortest_dist</span> <span class="o">&lt;=</span> <span class="n">precision</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">position</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">length</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">position</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">length</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">shortest_dist</span> <span class="o">&lt;=</span> <span class="n">precision</span><span class="p">:</span>
+                <span class="n">default</span><span class="o">=</span><span class="n">position</span>
                 <span class="k">break</span>
             
-        <span class="k">return</span> <span class="n">position</span></div>
+        <span class="k">return</span> <span class="n">default</span></div>
 
 <div class="viewcode-block" id="game_object.get_position"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns the position of the objects center</span>
-
+<span class="sd">        </span>
 <span class="sd">        The center in this case refers to the mean position of the object.</span>
 <span class="sd">        For a disjointed area this center can be outside of the object itself.</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        numpy array</span>
-<span class="sd">            2D position of the objects center</span>
+
+<span class="sd">        :returns: 2D position of the objects center</span>
+
+<span class="sd">        :rtype: numpy array</span>
+
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cx</span>   <span class="o">=</span> <span class="mi">0</span>
         <span class="n">cy</span>   <span class="o">=</span> <span class="mi">0</span>
@@ -308,90 +272,200 @@
 <div class="viewcode-block" id="game_object.move_object"><a class="viewcode-back" href="../code_docu.html#rogata_library.game_object.move_object">[docs]</a>    <span class="k">def</span> <span class="nf">move_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_pos</span><span class="p">,</span><span class="n">rotate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;moves the object to a new position and orientation</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        new_pos : numpy array</span>
-<span class="sd">            new 2D position of the object</span>
-<span class="sd">        rotate : scalar</span>
-<span class="sd">            angle of rotation</span>
+<span class="sd">        :param new_pos: new 2D position of the object</span>
+<span class="sd">        :type new_pos: numpy array</span>
+<span class="sd">        :param rotate: angle of rotation (Default value = 0)</span>
+<span class="sd">        :type rotate: scalar</span>
+
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">current_center</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">current_center</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)):</span>
             <span class="n">centered_contour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">current_center</span>
             <span class="c1">#TODO rotation of contour goes here. Uses polar conversion</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">centered_contour</span><span class="o">+</span><span class="n">new_pos</span></div></div>
 
-<span class="k">class</span> <span class="nc">dynamic_object</span><span class="p">(</span><span class="n">game_object</span><span class="p">):</span>
+<div class="viewcode-block" id="dynamic_object"><a class="viewcode-back" href="../code_docu.html#rogata_library.dynamic_object">[docs]</a><span class="k">class</span> <span class="nc">dynamic_object</span><span class="p">(</span><span class="n">game_object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">position</span><span class="p">,</span><span class="n">hitbox</span><span class="p">):</span>
         <span class="c1">#have marker ID OR Color, use move_object function to move</span>
-        <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
 
 
-<span class="k">class</span> <span class="nc">scene</span><span class="p">():</span>
+<div class="viewcode-block" id="scene"><a class="viewcode-back" href="../code_docu.html#rogata_library.scene">[docs]</a><span class="k">class</span> <span class="nc">scene</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;A class implemennting scene objects comprised of multiple :py:class:`game_object` objects.</span>
+<span class="sd">    It offers Ros Client interfaces which allow other nodes to request information about the game objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">game_object_list</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="o">=</span><span class="p">{}</span>
+        <span class="n">object_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">objects</span> <span class="ow">in</span> <span class="n">game_object_list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">objects</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">=</span> <span class="n">objects</span>
+            <span class="n">object_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="n">pos_serv</span>    <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;get_position&#39;</span><span class="p">,</span><span class="n">RequestPos</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_get_position</span><span class="p">)</span>
-        <span class="n">dist_serv</span>   <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;get_distance&#39;</span><span class="p">,</span><span class="n">RequestDist</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_get_distance</span><span class="p">)</span>
-        <span class="n">inters_serv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="s1">&#39;intersect_line&#39;</span><span class="p">,</span><span class="n">RequestInter</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_line_intersect</span><span class="p">)</span>
-        <span class="n">inside_serv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;check_inside&#39;</span><span class="p">,</span><span class="n">CheckInside</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_inside_check</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="s2">&quot;scene_objects&quot;</span><span class="p">,</span><span class="n">object_list</span><span class="p">)</span>
+
+        <span class="n">pos_serv</span>    <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;set_position&#39;</span>  <span class="p">,</span><span class="n">SetPos</span>       <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_set_position</span><span class="p">)</span>
+        <span class="n">dist_serv</span>   <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;get_distance&#39;</span>  <span class="p">,</span><span class="n">RequestDist</span>  <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_get_distance</span><span class="p">)</span>
+        <span class="n">inters_serv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;intersect_line&#39;</span><span class="p">,</span><span class="n">RequestInter</span> <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_line_intersect</span><span class="p">)</span>
+        <span class="n">inside_serv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;check_inside&#39;</span>  <span class="p">,</span><span class="n">CheckInside</span>  <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_inside_check</span><span class="p">)</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">rospy</span><span class="o">.</span><span class="n">has_param</span><span class="p">(</span><span class="s2">&quot;scene_objects&quot;</span><span class="p">):</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">delete_param</span><span class="p">(</span><span class="s2">&quot;scene_objects&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">handle_get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
-        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
-        <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reqest</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
-        <span class="n">pos</span>            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">choosen_object</span><span class="p">]</span><span class="o">.</span><span class="n">get_position</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">RequestPosResponse</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">handle_line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
-        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
-        <span class="n">origin</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+<div class="viewcode-block" id="scene.handle_set_position"><a class="viewcode-back" href="../code_docu.html#rogata_library.scene.handle_set_position">[docs]</a>    <span class="k">def</span> <span class="nf">handle_set_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles requests to the ``set_position`` ROS service server</span>
+
+<span class="sd">        :param request: </span>
+<span class="sd">        :type request: SetPosRequest</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">object</span><span class="p">]</span>
+        <span class="n">pos</span>            <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">request</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">choosen_object</span><span class="p">]</span><span class="o">.</span><span class="n">move_object</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SetPosResponse</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="scene.handle_line_intersect"><a class="viewcode-back" href="../code_docu.html#rogata_library.scene.handle_line_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">handle_line_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles requests to  the ``intersect_line`` ROS service server</span>
+
+<span class="sd">        :param request: </span>
+<span class="sd">        :type request: RequestInterRequest</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">object</span><span class="p">]</span>
+        <span class="n">origin</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
         <span class="n">direction</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">theta</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">theta</span><span class="p">)])</span>
-        <span class="n">length</span>         <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">length</span>
+        <span class="n">length</span>         <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">length</span>
         <span class="n">intersect</span>      <span class="o">=</span> <span class="n">choosen_object</span><span class="o">.</span><span class="n">line_intersect</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">RequestInterResponse</span><span class="p">(</span><span class="n">intersect</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">intersect</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">RequestInterResponse</span><span class="p">(</span><span class="n">intersect</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">intersect</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
-    <span class="k">def</span> <span class="nf">handle_get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
-        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
+<div class="viewcode-block" id="scene.handle_get_distance"><a class="viewcode-back" href="../code_docu.html#rogata_library.scene.handle_get_distance">[docs]</a>    <span class="k">def</span> <span class="nf">handle_get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles requests to the ``get_distance`` ROS service server</span>
+
+<span class="sd">        :param request: </span>
+<span class="sd">        :type request: RequestDistRequest</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">object</span><span class="p">]</span>
         <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reqest</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
         <span class="n">dist</span>           <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">choosen_object</span><span class="p">]</span><span class="o">.</span><span class="n">shortest_distance</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">RequestDistResponse</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RequestDistResponse</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">handle_inside_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
-        <span class="n">choosen_object</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">object</span>
-        <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reqest</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+<div class="viewcode-block" id="scene.handle_inside_check"><a class="viewcode-back" href="../code_docu.html#rogata_library.scene.handle_inside_check">[docs]</a>    <span class="k">def</span> <span class="nf">handle_inside_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles requests to the ``check_inside`` ROS service server</span>
+
+<span class="sd">        :param request: </span>
+<span class="sd">        :type request: CheckInsideRequest</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">choosen_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_objects</span><span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">object</span><span class="p">]</span>
+        <span class="n">point</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">request</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
         <span class="n">inside</span>         <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">choosen_object</span><span class="o">.</span><span class="n">is_inside</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">CheckInsideResponse</span><span class="p">(</span><span class="n">inside</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CheckInsideResponse</span><span class="p">(</span><span class="n">inside</span><span class="p">)</span></div></div>
 
-    
+   
+<div class="viewcode-block" id="rogata_helper"><a class="viewcode-back" href="../code_docu.html#rogata_library.rogata_helper">[docs]</a><span class="k">class</span> <span class="nc">rogata_helper</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;A class for people unfarmiliar with ROS.</span>
+
+<span class="sd">    It abstracts the ROS service communication with the :py:class:`scene` class into simply python functions.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span><span class="s1">&#39;intersect_line&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_objects</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;scene_objects&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">abstract_set_position</span>   <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;set_position&#39;</span><span class="p">,</span><span class="n">SetPos</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">set_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abstract_line_intersect</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;intersect_line&#39;</span><span class="p">,</span><span class="n">RequestInter</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">intersect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abstract_get_distance</span>   <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;get_distance&#39;</span><span class="p">,</span><span class="n">RequestDist</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abstract_check_inside</span>   <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;check_inside&#39;</span><span class="p">,</span><span class="n">CheckInside</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">inside</span><span class="p">)</span>
+
+<div class="viewcode-block" id="rogata_helper.set_pos"><a class="viewcode-back" href="../code_docu.html#rogata_library.rogata_helper.set_pos">[docs]</a>    <span class="k">def</span> <span class="nf">set_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">game_object</span><span class="p">,</span><span class="n">position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstracts the ``set_position`` ROS service communication to set the position of a :py:class:`game_object`</span>
+
+<span class="sd">        :param game_object: The name of the game object</span>
+<span class="sd">        :type game_object: string</span>
+<span class="sd">        :param position: The new position of the object</span>
+<span class="sd">        :type position: 2D numpy array</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">req</span>  <span class="o">=</span> <span class="n">SetPosRequest</span><span class="p">(</span><span class="n">game_object</span><span class="p">,</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abstract_get_position</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resp</span></div>
+
+<div class="viewcode-block" id="rogata_helper.intersect"><a class="viewcode-back" href="../code_docu.html#rogata_library.rogata_helper.intersect">[docs]</a>    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">game_object</span><span class="p">,</span><span class="n">start_point</span><span class="p">,</span><span class="n">direction</span><span class="p">,</span><span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstracts the ``intersect_line`` ROS service communication to get the intersection between a :py:class:`game_object` and a line</span>
+
+<span class="sd">        :param game_object: The name of the game object to intersect with</span>
+<span class="sd">        :type game_object: string</span>
+<span class="sd">        :param start_point: The start of the line</span>
+<span class="sd">        :type start_point: 2D numpy array</span>
+<span class="sd">        :param direction: The direction of the line as an angle following ROS convetion</span>
+<span class="sd">        :type direction: scalar</span>
+<span class="sd">        :param length: The length of the line </span>
+<span class="sd">        :type length: scalar</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">Pose2D</span><span class="p">(</span><span class="n">start_point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">start_point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">req</span>  <span class="o">=</span> <span class="n">RequestInterRequest</span><span class="p">(</span><span class="n">game_object</span><span class="p">,</span><span class="n">line</span><span class="p">,</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abstract_line_intersect</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">resp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">resp</span><span class="o">.</span><span class="n">y</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="rogata_helper.dist"><a class="viewcode-back" href="../code_docu.html#rogata_library.rogata_helper.dist">[docs]</a>    <span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">game_object</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstracts the ``get_distance`` ROS service communication to get the distance between a :py:class:`game_object` and a point</span>
+
+<span class="sd">        :param game_object: The name of the game object whoose distance should be measured</span>
+<span class="sd">        :type game_object: string</span>
+<span class="sd">        :param point: the point to which the distance should be measured</span>
+<span class="sd">        :type point: 2D numpy array</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">req</span>  <span class="o">=</span> <span class="n">RequestDistRequest</span><span class="p">(</span><span class="n">game_object</span><span class="p">,</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abstract_get_distance</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">distance</span></div>
+
+<div class="viewcode-block" id="rogata_helper.inside"><a class="viewcode-back" href="../code_docu.html#rogata_library.rogata_helper.inside">[docs]</a>    <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">game_object</span><span class="p">,</span><span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstracts the ``check_inside`` Ros Service communication to check wheter a given point is inside of a :py:class:`game_object`</span>
+
+
+<span class="sd">        :param game_object: the name of the game object to check</span>
+<span class="sd">        :type game_object: string</span>
+<span class="sd">        :param point:  The point to check</span>
+<span class="sd">        :type point: 2D numpy array</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">req</span>  <span class="o">=</span> <span class="n">CheckInsideRequest</span><span class="p">(</span><span class="n">game_object</span><span class="p">,</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abstract_check_inside</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">inside</span></div></div>
+
+
+
+
+
 <div class="viewcode-block" id="detect_area"><a class="viewcode-back" href="../code_docu.html#rogata_library.detect_area">[docs]</a><span class="k">def</span> <span class="nf">detect_area</span><span class="p">(</span><span class="n">hsv_img</span><span class="p">,</span><span class="n">lower_color</span><span class="p">,</span><span class="n">upper_color</span><span class="p">,</span><span class="n">marker_id</span><span class="p">,</span><span class="n">min_size</span><span class="p">,</span><span class="n">draw</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detects the contour of an object containing a marker based on color</span>
-
+<span class="sd">    </span>
 <span class="sd">    It always returns the smallest contour which still contains the marker</span>
 <span class="sd">    The contour is detected using an image with hsv color space to be robust under different lighting conditions.</span>
 <span class="sd">    If draw=True the systems draws all found contours as well as the current smalles one containing the marker onto hsv_img</span>
+
+<span class="sd">    :param hsv_image: a Image in hsv color space in which the contours  should be detected</span>
+<span class="sd">    :type hsv_image: numpy array</span>
+<span class="sd">    :param lower_color: a 3x1 array containing the lower boundary for the color detection</span>
+<span class="sd">    :type lower_color: numpy array</span>
+<span class="sd">    :param upper_color: a 3x1 array containing the upper boundary for the color detection</span>
+<span class="sd">    :type upper_color: numpy array</span>
+<span class="sd">    :param marker_id: the ID of a 4x4 aruco marker which identifies the object</span>
+<span class="sd">    :type marker_id: scalar</span>
+<span class="sd">    :param hsv_img: </span>
+<span class="sd">    :param min_size: </span>
+<span class="sd">    :param draw:  (Default value = False)</span>
+
 <span class="sd">    </span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    hsv_image : numpy array</span>
-<span class="sd">        a Image in hsv color space in which the contours  should be detected</span>
-<span class="sd">    lower_color : numpy array</span>
-<span class="sd">        a 3x1 array containing the lower boundary for the color detection</span>
-<span class="sd">    upper_color : numpy array</span>
-<span class="sd">        a 3x1 array containing the upper boundary for the color detection</span>
-<span class="sd">    marker_id : scalar</span>
-<span class="sd">        the ID of a 4x4 aruco marker which identifies the object</span>
-
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># color detection</span>

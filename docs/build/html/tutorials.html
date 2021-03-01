@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; RoGaTa Engine 1.0 documentation</title>
+  <title>Tutorials &mdash; RoGaTa Engine 1.0 documentation</title>
   
 
   
@@ -31,8 +31,8 @@
 
   
     <link rel="top" title="RoGaTa Engine 1.0 documentation" href="index.html"/>
-        <link rel="next" title="Tutorials" href="tutorials.html"/>
-        <link rel="prev" title="How it Works" href="how_it_works.html"/> 
+        <link rel="next" title="Code Documentation" href="code_docu.html"/>
+        <link rel="prev" title="Getting Started" href="usage.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -84,12 +84,12 @@
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="what_is_rogata.html">What is the RoGaTa Engine?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">How it Works</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setting-up-the-enviroment">Setting up the Enviroment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setting-up-a-scene">Setting up a Scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simple-line-of-sight-calculation">Simple Line of Sight Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-scoreboards">Simple Scoreboards</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docu.html">Code Documentation</a></li>
 </ul>
 
@@ -121,11 +121,11 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Getting Started</li>
+    <li>Tutorials</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/usage.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/tutorials.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -135,40 +135,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="getting-started">
-<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="tutorials">
+<h1>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>The RoGaTa engine build upon <a class="reference external" href="http://wiki.ros.org/melodic">Ros Melodic</a> to interface with the robots, and <a class="reference external" href="https://docs.opencv.org/master/da/df6/tutorial_py_table_of_contents_setup.html">OpenCV-Python</a> to calibrate the arena and track all dynamic objects.
-The first step is thus to install ROS on all robots as well as the host PC.</p>
-<p>The host PC refers in this case to the PC which runs the engine which means that additonally OpenCV has to be installed there.</p>
-<div class="section" id="setting-up-the-enviroment">
-<h2>Setting up the Enviroment<a class="headerlink" href="#setting-up-the-enviroment" title="Permalink to this headline">¶</a></h2>
-<p>Once ROS and OpenCV are installed the environment of the engine has to be set up.
-First a catkin workspace has to be created.
-For this <a class="reference external" href="http://wiki.ros.org/catkin/Tutorials/create_a_workspace">catkin tutorial</a> can be followed.</p>
-<p>The RoGaTa Engine itself is a ROS package containing nodes for camera based sensing and a library that provides utilities for game development.
-The package has to be placed inside the <code class="docutils literal"><span class="pre">catkin_ws/src</span></code> directory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>cd ~/catkin_ws/src
-git clone https://github.com/liquidcronos/RoGaTa-Engine
-</pre></div>
+<div class="section" id="simple-line-of-sight-calculation">
+<h2>Simple Line of Sight Calculation<a class="headerlink" href="#simple-line-of-sight-calculation" title="Permalink to this headline">¶</a></h2>
 </div>
-<p>Afterward the <code class="docutils literal"><span class="pre">catkin_make</span></code> command has to be called inside the <code class="docutils literal"><span class="pre">catkin_ws</span></code> directory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>cd ..
-catkin_make
-</pre></div>
-</div>
-<p>If everything is correctly installed, the following command should change the current directory to the one containing the ROS package:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>roscd rogata_engine
-</pre></div>
-</div>
-</div>
-<div class="section" id="setting-up-a-scene">
-<h2>Setting up a Scene<a class="headerlink" href="#setting-up-a-scene" title="Permalink to this headline">¶</a></h2>
-<p>Scenes can be thought of as real life video game levels.
-A Scene is made up of multiple game objects whose position is determined by a camera above the physical level.
-Setting up a scene thus simply means getting the engine to recognize phyiscal objects as game objects.</p>
-<p>The RoGaTa engine uses a simple recognition based on an objects color.</p>
+<div class="section" id="simple-scoreboards">
+<h2>Simple Scoreboards<a class="headerlink" href="#simple-scoreboards" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -179,10 +154,10 @@ Setting up a scene thus simply means getting the engine to recognize phyiscal ob
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="code_docu.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="how_it_works.html" class="btn btn-neutral" title="How it Works" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral" title="Getting Started" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -6,69 +6,33 @@ from rogata_engine.srv import *
 from geometry_msgs.msg import Pose2D
 
 class game_object:
-    """
-    A class defining the most basic game objects of the engine
-
-    ...
-
-    Attributes
-    ----------
-    name : str
-        the name of the object
-    area :  array
-        array containing all borders of the object
-    holes : array
-        array specifying witch border constitues a hole and which an outer border
-
-    Methods
-    -------
-    is_inside(point)
-        checks wheter a point is inside the area of the object
-    shortest_distance(point)
-        calculates the shortest distance between the point and the border of the object
-    line_intersect(start,direction,length,iterations=100,precision=0.01)
-        calculates the intersection between a line and the border of the object
-    get_position()
-        returns the position of the objects center
-    move_object(new_position,new_ori)
-        moves the object to a new position and orientation
+    """A class defining the most basic game objects of the engine
+    
+    :param string name: The name of the object
+    :param area: A array containin all borders of the object as a `contour <https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html>`
+    :type area: numpy array
+    :param holes: Array specifying which border constitutes a inner or outer border
+    :type holes: numpy array
     """
 
+    def __init__(self,name,area,holes):
 
-    def __init__(self,name,contour_array,hole_spec):
-        """
-        Parameters
-        ----------
-        name : str
-            the name of the object
-        area :  array
-            array containing all borders of the object
-        holes : array
-            array specifying witch border constitues a hole and which an outer border
-        """
-
-
-        #TODO input validation: hole_spec should have length of contour array
         self.name = name
-        self.area=contour_array
-        self.holes=hole_spec
+        self.area=area
+        self.holes=holes
 
 
     def is_inside(self,point):
         """Checks wheter a point is inside the area of the object
-
+        
         A point directl on the border is also considered inside
 
-        Parameters
-        ---------
-        point : numpy array
-            A 2D point which is to be checked
+        :param point: A point which is to be checked
+        :type point: 2D numpy array
+        :returns: a truthvalue indicating wheter or not the point  is inside the game object
+        :rtype: bool
 
         
-        Returns
-        -------
-        bool 
-            a truthvalue indicating wheter or not the point  is inside the game object 
         """
 
 
@@ -98,18 +62,15 @@ class game_object:
 
     def shortest_distance(self,point):
         """calculates the shortest distance between the point and the border of the object
-
+        
         Also returns a positive distance when inside the object
 
-        Parameters
-        ---------
-        point : numpy array
-            A 2D point which is to be checked
+        :param point: A 2D point which is to be checked
+        :type point: numpy array
+        :returns: distance to border of the object
+        :rtype: scalar
 
-        Returns
-        -------
-        scalar
-            distance to border of the object
+        
         """
 
         point=tuple(point)
@@ -120,27 +81,23 @@ class game_object:
 
     def line_intersect(self,start,direction,length,iterations=100,precision=0.001):
         """calculates the intersection between a line and the border of the object
-
-        Iterations and precision are kept at standart values if non are provided
         
-        Parameters
-        ----------
-        start : numpy array
-            a 2D point which specifies the start of the line
-        direction : numpy array
-            a normalized vector specifiying the direction of the line
-        length : scalar
-            a scalar specifiying the maximum length of the line
-        iterations : scalar
-            the number of iterations for the ray marching algorithm used
-        precision : scalar
-            the precision with which the intersection is being calculated
+        Iterations and precision are kept at standart values if non are provided
 
-        Returns
-        -------
-        numpy array
-            2D position of the intersection
+        :param start: a 2D point which specifies the start of the line
+        :type start: numpy array
+        :param direction: a normalized vector specifiying the direction of the line
+        :type direction: numpy array
+        :param length: a scalar specifiying the maximum length of the line
+        :type length: scalar
+        :param iterations: the number of iterations for the ray marching algorithm used (Default value = 100)
+        :type iterations: scalar
+        :param precision: the precision with which the intersection is being calculated (Default value = 0.001)
+        :type precision: scalar
+        :returns: 2D position of the intersection
+        :rtype: numpy array
 
+        
         """
         position = start
         default  = start+length*direction/np.linalg.norm(direction)
@@ -158,14 +115,16 @@ class game_object:
 
     def get_position(self):
         """returns the position of the objects center
-
+        
         The center in this case refers to the mean position of the object.
         For a disjointed area this center can be outside of the object itself.
 
-        Returns
-        -------
-        numpy array
-            2D position of the objects center
+
+        :returns: 2D position of the objects center
+
+        :rtype: numpy array
+
+        
         """
         cx   = 0
         cy   = 0
@@ -180,12 +139,12 @@ class game_object:
     def move_object(self,new_pos,rotate=0):
         """moves the object to a new position and orientation
 
-        Parameters
-        ----------
-        new_pos : numpy array
-            new 2D position of the object
-        rotate : scalar
-            angle of rotation
+        :param new_pos: new 2D position of the object
+        :type new_pos: numpy array
+        :param rotate: angle of rotation (Default value = 0)
+        :type rotate: scalar
+
+        
         """
         current_center   = self.get_position()
         for i in range(len(self.area)):
@@ -194,12 +153,16 @@ class game_object:
             self.area[i]=centered_contour+new_pos
 
 class dynamic_object(game_object):
+    """ """
     def __init__(self,name,position,hitbox):
         #have marker ID OR Color, use move_object function to move
         return 0
 
 
 class scene():
+    """A class implemennting scene objects comprised of multiple :py:class:`game_object` objects.
+    It offers Ros Client interfaces which allow other nodes to request information about the game objects.
+    """
     
     def __init__(self,game_object_list):
         self.game_objects={}
@@ -222,11 +185,24 @@ class scene():
 
 
     def handle_set_position(self,request):
+        """Handles requests to the ``set_position`` ROS service server
+
+        :param request: 
+        :type request: SetPosRequest
+
+        """
         choosen_object = self.game_objects[request.object]
-        pos            = self.game_objects[choosen_object].set_position()
+        pos            = np.array([request.x,request.y])
+        self.game_objects[choosen_object].move_object(pos)
         return SetPosResponse(1)
 
     def handle_line_intersect(self,request):
+        """Handles requests to  the ``intersect_line`` ROS service server
+
+        :param request: 
+        :type request: RequestInterRequest
+
+        """
         choosen_object = self.game_objects[request.object]
         origin         = np.array([request.line.x,request.line.y])
         direction      = np.array([np.cos(request.line.theta),np.sin(request.line.theta)])
@@ -235,12 +211,24 @@ class scene():
         return RequestInterResponse(intersect[0],intersect[1])
 
     def handle_get_distance(self,request):
+        """Handles requests to the ``get_distance`` ROS service server
+
+        :param request: 
+        :type request: RequestDistRequest
+
+        """
         choosen_object = self.game_objects[request.object]
         point          = np.array([reqest.x,request.y])
         dist           = self.game_objects[choosen_object].shortest_distance(point)
         return RequestDistResponse(dist)
 
     def handle_inside_check(self,request):
+        """Handles requests to the ``check_inside`` ROS service server
+
+        :param request: 
+        :type request: CheckInsideRequest
+
+        """
         choosen_object = self.game_objects[request.object]
         point          = np.array([request.x,request.y])
         inside         = bool(choosen_object.is_inside(point))
@@ -248,10 +236,11 @@ class scene():
 
    
 class rogata_helper():
-    """
-    A class for people unfarmiliar with ROS.
-    It abstracts the ROS service calls, into simple class function calls.
+    """A class for people unfarmiliar with ROS.
 
+    It abstracts the ROS service communication with the :py:class:`scene` class into simply python functions.
+    
+    
     """
     def __init__(self):
         rospy.wait_for_service('intersect_line')
@@ -262,23 +251,60 @@ class rogata_helper():
         self.abstract_get_distance   = rospy.ServiceProxy('get_distance',RequestDist,self.dist)
         self.abstract_check_inside   = rospy.ServiceProxy('check_inside',CheckInside,self.inside)
 
-    def set_pos(self,game_object):
-        req  = SetPosRequest(game_object)
+    def set_pos(self,game_object,position):
+        """Abstracts the ``set_position`` ROS service communication to set the position of a :py:class:`game_object`
+
+        :param game_object: The name of the game object
+        :type game_object: string
+        :param position: The new position of the object
+        :type position: 2D numpy array
+
+        """
+        req  = SetPosRequest(game_object,position[0],position[1])
         resp = self.abstract_get_position(req)
         return resp
 
     def intersect(self,game_object,start_point,direction,length):
+        """Abstracts the ``intersect_line`` ROS service communication to get the intersection between a :py:class:`game_object` and a line
+
+        :param game_object: The name of the game object to intersect with
+        :type game_object: string
+        :param start_point: The start of the line
+        :type start_point: 2D numpy array
+        :param direction: The direction of the line as an angle following ROS convetion
+        :type direction: scalar
+        :param length: The length of the line 
+        :type length: scalar
+
+        """
         line = Pose2D(start_point[0],start_point[1],direction)
         req  = RequestInterRequest(game_object,line,length)
         resp = self.abstract_line_intersect(req)
         return np.array([resp.x,resp.y])
 
-    def dist(self,game_object,position):
-        req  = RequestDistRequest(game_object,position[0],position[1])
+    def dist(self,game_object,point):
+        """Abstracts the ``get_distance`` ROS service communication to get the distance between a :py:class:`game_object` and a point
+
+        :param game_object: The name of the game object whoose distance should be measured
+        :type game_object: string
+        :param point: the point to which the distance should be measured
+        :type point: 2D numpy array
+
+        """
+        req  = RequestDistRequest(game_object,point[0],point[1])
         resp = self.abstract_get_distance(req)
         return resp.distance
 
     def inside(self,game_object,point):
+        """Abstracts the ``check_inside`` Ros Service communication to check wheter a given point is inside of a :py:class:`game_object`
+
+
+        :param game_object: the name of the game object to check
+        :type game_object: string
+        :param point:  The point to check
+        :type point: 2D numpy array
+
+        """
         req  = CheckInsideRequest(game_object,point[0],point[1])
         resp = self.abstract_check_inside(req)
         return resp.inside
@@ -289,27 +315,24 @@ class rogata_helper():
 
 def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     """Detects the contour of an object containing a marker based on color
-
+    
     It always returns the smallest contour which still contains the marker
     The contour is detected using an image with hsv color space to be robust under different lighting conditions.
     If draw=True the systems draws all found contours as well as the current smalles one containing the marker onto hsv_img
+
+    :param hsv_image: a Image in hsv color space in which the contours  should be detected
+    :type hsv_image: numpy array
+    :param lower_color: a 3x1 array containing the lower boundary for the color detection
+    :type lower_color: numpy array
+    :param upper_color: a 3x1 array containing the upper boundary for the color detection
+    :type upper_color: numpy array
+    :param marker_id: the ID of a 4x4 aruco marker which identifies the object
+    :type marker_id: scalar
+    :param hsv_img: 
+    :param min_size: 
+    :param draw:  (Default value = False)
+
     
-
-    Parameters
-    ----------
-    hsv_image : numpy array
-        a Image in hsv color space in which the contours  should be detected
-    lower_color : numpy array
-        a 3x1 array containing the lower boundary for the color detection
-    upper_color : numpy array
-        a 3x1 array containing the upper boundary for the color detection
-    marker_id : scalar
-        the ID of a 4x4 aruco marker which identifies the object
-
-
-    Returns
-    -------
-
     """
 
     # color detection
