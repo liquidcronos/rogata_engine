@@ -3,6 +3,7 @@ import cv2
 import cv2.aruco as aruco
 import rospy
 from rogata_engine.srv import *
+from geometry_msgs.msg import Pose2D
 
 class game_object:
     """
@@ -202,21 +203,28 @@ class scene():
     
     def __init__(self,game_object_list):
         self.game_objects={}
+        object_list = []
         for objects in game_object_list:
             self.game_objects[objects.name]= objects
+            object_list.append(objects.name)
 
-        pos_serv    = rospy.Service('get_position'  ,RequestPos   ,self.handle_get_position)
+        rospy.set_param("scene_objects",object_list)
+
+        pos_serv    = rospy.Service('set_position'  ,SetPos       ,self.handle_set_position)
         dist_serv   = rospy.Service('get_distance'  ,RequestDist  ,self.handle_get_distance)
         inters_serv = rospy.Service('intersect_line',RequestInter ,self.handle_line_intersect)
         inside_serv = rospy.Service('check_inside'  ,CheckInside  ,self.handle_inside_check)
         rospy.spin()
 
+    def __del__(self):
+        if rospy.has_param("scene_objects"):
+            rospy.delete_param("scene_objects")
 
-    def handle_get_position(self,request):
+
+    def handle_set_position(self,request):
         choosen_object = self.game_objects[request.object]
-        point          = np.array([reqest.x,request.y])
-        pos            = self.game_objects[choosen_object].get_position(point)
-        return RequestPosResponse(pos[0],pos[1])
+        pos            = self.game_objects[choosen_object].set_position()
+        return SetPosResponse(1)
 
     def handle_line_intersect(self,request):
         choosen_object = self.game_objects[request.object]
@@ -238,7 +246,47 @@ class scene():
         inside         = bool(choosen_object.is_inside(point))
         return CheckInsideResponse(inside)
 
-    
+   
+class rogata_helper():
+    """
+    A class for people unfarmiliar with ROS.
+    It abstracts the ROS service calls, into simple class function calls.
+
+    """
+    def __init__(self):
+        rospy.wait_for_service('intersect_line')
+        self.available_objects=rospy.get_param("scene_objects")
+
+        self.abstract_set_position   = rospy.ServiceProxy('set_position',SetPos,self.set_pos)
+        self.abstract_line_intersect = rospy.ServiceProxy('intersect_line',RequestInter,self.intersect)
+        self.abstract_get_distance   = rospy.ServiceProxy('get_distance',RequestDist,self.dist)
+        self.abstract_check_inside   = rospy.ServiceProxy('check_inside',CheckInside,self.inside)
+
+    def set_pos(self,game_object):
+        req  = SetPosRequest(game_object)
+        resp = self.abstract_get_position(req)
+        return resp
+
+    def intersect(self,game_object,start_point,direction,length):
+        line = Pose2D(start_point[0],start_point[1],direction)
+        req  = RequestInterRequest(game_object,line,length)
+        resp = self.abstract_line_intersect(req)
+        return np.array([resp.x,resp.y])
+
+    def dist(self,game_object,position):
+        req  = RequestDistRequest(game_object,position[0],position[1])
+        resp = self.abstract_get_distance(req)
+        return resp.distance
+
+    def inside(self,game_object,point):
+        req  = CheckInsideRequest(game_object,point[0],point[1])
+        resp = self.abstract_check_inside(req)
+        return resp.inside
+
+
+
+
+
 def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     """Detects the contour of an object containing a marker based on color
 
