@@ -117,7 +117,7 @@ class game_object:
             min_dist=np.minimum(np.abs(cv2.pointPolygonTest(self.area[i],point,True)),min_dist)
         return min_dist
 
-    def line_intersect(self,start,direction,length,iterations=100,precision=0.01):
+    def line_intersect(self,start,direction,length,iterations=100,precision=0.001):
         """calculates the intersection between a line and the border of the object
 
         Iterations and precision are kept at standart values if non are provided
@@ -141,16 +141,19 @@ class game_object:
             2D position of the intersection
 
         """
-        touched  = False
         position = start
+        default  = start+length*direction/np.linalg.norm(direction)
         for k in  range(iterations):
             shortest_dist = self.shortest_distance(position)
             position      = position + shortest_dist*direction/np.linalg.norm(direction)
 
-            if shortest_dist <= precision or np.linalg.norm(position-start) >= length:
+            if np.linalg.norm(position-start) >= length:
+                break
+            if shortest_dist <= precision:
+                default=position
                 break
             
-        return position
+        return default
 
     def get_position(self):
         """returns the position of the objects center

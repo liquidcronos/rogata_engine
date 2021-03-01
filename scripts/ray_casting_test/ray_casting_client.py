@@ -48,14 +48,14 @@ while(cap.isOpened()):
         for i in range(36):
             inters_type = -1
             objects =np.array(['white hole','right rock','left rock'])
-            for k in range(len(objects)):
+            for k in range(1):
                 line      = Pose2D(test_point[0],test_point[1],i)
                 name=String()
                 name.data = objects[k]
                 req       = RequestInterRequest(str(objects[k]),line,length)
                 response  = inters(req)
                 end_point = (int(response.x),int(response.y))
-            cv2.line(image,tuple(test_point),end_point,(255,0,0),3)
+                cv2.line(image,tuple(test_point),end_point,(255,125*k,0),3)
         cv2.imshow("rac casting test",image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
