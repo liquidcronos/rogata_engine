@@ -16,7 +16,7 @@ import sys
 import os
 import mock
  
-MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'cv2','aruco','cv2.aruco','geometry_msgs.msg','rospy','rogata_engine','rogata_engine.srv']
+MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'cv2','aruco','cv2.aruco','geometry_msgs','geometry_msgs.msg','rospy','rogata_engine','rogata_engine.srv']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 # If extensions (or modules to document with autodoc) are in another directory,
