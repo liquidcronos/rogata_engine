@@ -234,7 +234,7 @@ class scene():
 
     def handle_inside_check(self,request):
         choosen_object = self.game_objects[request.object]
-        point          = np.array([reqest.x,request.y])
+        point          = np.array([request.x,request.y])
         inside         = bool(choosen_object.is_inside(point))
         return CheckInsideResponse(inside)
 
