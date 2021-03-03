@@ -9,9 +9,9 @@ It uses a camera to identify real objects and areas and iinitialize them as game
 This allows the engine to offer the same functionality a normal game engine provides.
 
 Example functionalities include:
-* calculate line of sight between robots without on-board cameras.
-* check if a robot has entered a specified area
-* simulate laser scanner readings with virtual walls
+ * calculate line of sight between robots without on-board cameras.
+ * check if a robot has entered a specified area
+ * simulate laser scanner readings with virtual walls
 
 Using these functionalities it is possible to develop video games which use real robots as actors.
 
