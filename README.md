@@ -1,4 +1,4 @@
-# Robokart-Engine
+# RoGaTa Engine
 
 The Robotic Games Tabletop engine is a set of ROS based software tools that bridge the gap between mobile robotics and game development. It uses a camera to identify real objects and areas and iinitialize them as game objects. This allows the engine to offer the same functionality a normal game engine provides.
 

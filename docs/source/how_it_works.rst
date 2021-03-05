@@ -6,6 +6,9 @@ How it Works
    
 
 The RoGaTa engine defines game objects by detecting and tracking their position using a camera afixed over the game area.
+
+.. image:: setup.png
+
 The main consideration when choosing an object detection scheme for the engine is the ability to quickly setup the game area and initialize the game objects.
 For this reason a mixture of marker based tracking and color based detection was used.
 Before explaining in detail how the tracking is performed, one first has to define what exactly needs to be tracked.
