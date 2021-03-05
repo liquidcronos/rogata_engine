@@ -142,7 +142,7 @@ class game_object:
 
         :param new_pos: new 2D position of the object
         :type new_pos: numpy array
-        :param rotate: angle of rotation (Default value = 0)
+        :param rotate: angle of rotation in radians (Default value = 0)
         :type rotate: scalar
 
         
@@ -150,20 +150,31 @@ class game_object:
         current_center   = self.get_position()
         for i in range(len(self.area)):
             centered_contour = self.area[i] - current_center
-            #TODO rotation of contour goes here. Uses polar conversion
+
+            xs, ys = centered_contour[:, 0], centered_contour[:, 1]
+
+            thetas, rhos = cart2pol(xs, ys)
+            thetas       = thetas + rotate
+            xs, ys       = pol2cart(thetas, rhos)
+
+            centered_contour[:,0] = xs
+            centered_contoru[:,1] = ys
+            
             self.area[i]=centered_contour+new_pos
 
 class dynamic_object(game_object):
     """ """
-    def __init__(self,name,hitbox,ID):
+    def __init__(self,name,hitbox,ID,initial_ori=0):
         if hitbox['type']=='rectangle':
             height = hitbox['height']
             width  = hitbox['width']
-            area   = np.array([[0,0],[height,0],[height,width],[0,width]])
+            area   = np.array([[0,0],[height,0],[height,width],[0,width]], dtype=np.int32)
         holes = np.array([1])
-        game_object.__init__(self,name,area,holes)
+        game_object.__init__(self,name,[area],holes)
 
-        self.ID =ID
+        self.ID          = ID
+        self.orientation = initial_ori
+    
 
 
 class scene():
@@ -200,9 +211,10 @@ class scene():
                 current_publisher = publisher_dict[object_names]
                 pose              = current_object.get_position()
 
-                position                      = Odometry()
-                position.pose.pose.position.x = pose[0]
-                position.pose.pose.position.y = pose[1]
+                position                         = Odometry()
+                position.pose.pose.position.x    = pose[0]
+                position.pose.pose.position.y    = pose[1]
+                position.pose.pose.orientation.z = current_object.orientation
                 current_publisher.publish(position)
 
 
@@ -469,4 +481,20 @@ def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     return None
 
 
+def cart2pol(x, y):
+    """Converts a point (x,y) into polar coordinates (theta, rho)
+
+    """
+    theta = np.arctan2(y, x)
+    rho = np.hypot(x, y)
+    return theta, rho
+
+
+def pol2cart(theta, rho):
+    """Converts polar coordinates (theta, rho) into cartesian coordinates (x,y)
+
+    """
+    x = rho * np.cos(theta)
+    y = rho * np.sin(theta)
+    return x, y
 
