@@ -4,6 +4,7 @@ import cv2.aruco as aruco
 import rospy
 from rogata_engine.srv import *
 from geometry_msgs.msg import Pose2D
+from nav_msgs.msg import Odometry
 
 class game_object:
     """A class defining the most basic game objects of the engine
@@ -173,11 +174,14 @@ class scene():
     def __init__(self,game_object_list):
         self.game_objects={}
         self.object_list = []
+        self.dynamic_object_list = []
         for objects in game_object_list:
-            self.game_objects[objects.name]= objects
+            self.game_objects[objects.name] = objects
             self.object_list.append(objects.name)
             if isinstance(objects,dynamic_object):
                rospy.set_param(objects.name+"_id",objects.ID)
+               self.dynamic_object_list.append(objects.name)
+
 
         rospy.set_param("scene_objects",self.object_list)
 
@@ -185,7 +189,22 @@ class scene():
         dist_serv   = rospy.Service('get_distance'  ,RequestDist  ,self.handle_get_distance)
         inters_serv = rospy.Service('intersect_line',RequestInter ,self.handle_line_intersect)
         inside_serv = rospy.Service('check_inside'  ,CheckInside  ,self.handle_inside_check)
-        rospy.spin()
+       
+        publisher_dict={}
+        for object_names in self.dynamic_object_list:
+            publisher_dict[object_names]=rospy.Publisher(object_names+"/odom",Odometry,queue_size=10)
+
+        while not rospy.is_shutdown():
+            for object_names in self.dynamic_object_list:
+                current_object    = self.game_objects[object_names]
+                current_publisher = publisher_dict[object_names]
+                pose              = current_object.get_position()
+
+                position                      = Odometry()
+                position.pose.pose.position.x = pose[0]
+                position.pose.pose.position.y = pose[1]
+                current_publisher.publish(position)
+
 
     def __del__(self):
         for elements in self.object_list:
@@ -325,25 +344,51 @@ class rogata_helper():
 
 
 
-def track_dynamic_object(gray_image,object_name):
-    #TODO read rosparams given object and call track_aruco_marker
-    #TODO set new position of object using service!
-    return 0
+def track_dynamic_object(gray_image,object_name_list,A=np.eye(3)):
+    """Function which automatically tracks a list of :py:class:`game_object'  that are part of a :py:class:`scene`
+
+    """
+
+    set_position=rospy.ServiceProxy('set_position',SetPos)
+    available_marker_list     = []
+    available_marker_id_list = []
+    for object_name in object_name_list:
+        if rospy.has_param(object_name+"_id"):
+            marker_id = rospy.get_param(object_name+"_id")
+
+            available_marker_id_list.append(marker_id)
+            available_marker_list.append(object_name)
+
+    new_pos_dict = track_aruco_marker(gray_image,available_marker_id_list)
+
+    for i in range(len(available_marker_id_list)):
+        object_name = available_marker_list[i]
+        new_pos     = new_pos_dict[available_marker_id_list[i]]
+
+        req         = SetPosRequest(object_name, new_pos[0] , new_pos[1])
+        resp        = set_position(req)
+        return 1
+    else:
+        return 0
     
 
-def track_aruco_marker(gray_image,marker_id):
+def track_aruco_marker(gray_image,marker_id_list):
     aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
     parameters = aruco.DetectorParameters_create()
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray_image, aruco_dict, parameters=parameters)
-    try:
-        if marker_id not in ids:
-            return None
-        else:
-            indice=np.where(ids == marker_id)
-            center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
-            return center
-    except:
-        return None
+
+    center_dict={}
+    for marker_id in marker_id_list:
+        try:
+            if marker_id not in ids:
+                center_dict[marker_id]=None
+            else:
+                indice=np.where(ids == marker_id)
+                center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
+                center_dict[marker_id]=center
+        except:
+            center_dict[marker_id]=None
+    return center_dict
 
 
 
@@ -391,10 +436,10 @@ def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     
 
     #marker detection:
-    split_hsv = cv2.split(hsv_img)
-    gray    = split_hsv[2]
-    cv2.imshow("test_window",gray)
-    center  =  track_aruco_marker(gray,marker_id)
+    split_hsv    = cv2.split(hsv_img)
+    gray         = split_hsv[2]
+    center_dict  =  track_aruco_marker(gray,[marker_id])
+    center       = center_dict[marker_id]
 
     if np.any(center != None):
         if draw == True:
