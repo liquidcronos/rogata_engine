@@ -135,7 +135,7 @@ class game_object:
             cx   = cx   + moments['m10']
             cy   = cy   + moments['m01']
             size = size + moments['m00']
-        return np.array([int(cx/size),int(cy/size)])
+        return np.array([int(cx/float(size)),int(cy/float(size))])
 
     def move_object(self,new_pos,rotate=0):
         """moves the object to a new position and orientation
@@ -147,19 +147,27 @@ class game_object:
 
         
         """
-        current_center   = self.get_position()
+        cx   = 0
+        cy   = 0
+        size = 0
+        for contours in self.area:
+            moments  = cv2.moments(contours)
+            cx   = cx   + moments['m10']
+            cy   = cy   + moments['m01']
+            size = size + moments['m00']
+        current_center = np.array([int(cx/float(size)),int(cy/float(size))])
+        #current_center   = self.get_position()
         for i in range(len(self.area)):
             centered_contour = self.area[i] - current_center
+            print(self.area[i],current_center)
+            #xs, ys = centered_contour[:, 0], centered_contour[:, 1]
 
-            xs, ys = centered_contour[:, 0], centered_contour[:, 1]
+            #thetas, rhos = cart2pol(xs, ys)
+            #thetas       = thetas + rotate
+            #xs, ys       = pol2cart(thetas, rhos)
 
-            thetas, rhos = cart2pol(xs, ys)
-            thetas       = thetas + rotate
-            xs, ys       = pol2cart(thetas, rhos)
-
-            centered_contour[:,0] = xs
-            centered_contoru[:,1] = ys
-            
+            #centered_contour[:,0] = xs
+            #centered_contour[:,1] = ys
             self.area[i]=centered_contour+new_pos
 
 class dynamic_object(game_object):
@@ -168,9 +176,9 @@ class dynamic_object(game_object):
         if hitbox['type']=='rectangle':
             height = hitbox['height']
             width  = hitbox['width']
-            area   = np.array([[0,0],[height,0],[height,width],[0,width]], dtype=np.int32)
+            area   = np.array([[0,0],[0,height],[width,height],[width,0]], dtype=np.int32)
         holes = np.array([1])
-        game_object.__init__(self,name,[area],holes)
+        game_object.__init__(self,name,np.array([area]),holes)
 
         self.ID          = ID
         self.orientation = initial_ori
@@ -218,6 +226,7 @@ class scene():
                 current_publisher.publish(position)
 
 
+
     def __del__(self):
         for elements in self.object_list:
             if rospy.has_param(elements+"_id"):
@@ -235,7 +244,7 @@ class scene():
         """
         choosen_object = self.game_objects[request.object]
         pos            = np.array([request.x,request.y])
-        self.game_objects[choosen_object].move_object(pos)
+        choosen_object.move_object(pos)
         return SetPosResponse(1)
 
     def handle_line_intersect(self,request):
@@ -356,7 +365,7 @@ class rogata_helper():
 
 
 
-def track_dynamic_object(gray_image,object_name_list,A=np.eye(3)):
+def track_dynamic_objects(gray_image,object_name_list,A=np.eye(3)):
     """Function which automatically tracks a list of :py:class:`game_object'  that are part of a :py:class:`scene`
 
     """
@@ -376,7 +385,6 @@ def track_dynamic_object(gray_image,object_name_list,A=np.eye(3)):
     for i in range(len(available_marker_id_list)):
         object_name = available_marker_list[i]
         new_pos     = new_pos_dict[available_marker_id_list[i]]
-
         req         = SetPosRequest(object_name, new_pos[0] , new_pos[1])
         resp        = set_position(req)
         return 1
