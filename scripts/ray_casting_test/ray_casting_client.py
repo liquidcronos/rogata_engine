@@ -49,14 +49,14 @@ while(cap.isOpened()):
             objects     = np.array(['white hole','right rock','left rock'])
             color_array = np.array([[255,0,0],[0,255,0],[0,0,255]])
             for k in range(len(objects)):
-                line      = Pose2D(test_point[0],test_point[1],i)
+                line      = Pose2D(test_point[0],test_point[1],(10*i+4*k)/360.0*2*np.pi)
                 name=String()
                 name.data = objects[k]
                 req       = RequestInterRequest(str(objects[k]),line,length)
                 response  = inters(req)
                 end_point = (int(response.x),int(response.y))
 
-                cv2.line(image,tuple(test_point),end_point,(color_array[k][0],color_array[k][1],color_array[k][2]),6-2*k)
+                cv2.line(image,tuple(test_point),end_point,(color_array[k][0],color_array[k][1],color_array[k][2]),3)
         cv2.imshow("rac casting test",image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

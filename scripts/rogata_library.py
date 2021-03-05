@@ -154,9 +154,15 @@ class game_object:
 
 class dynamic_object(game_object):
     """ """
-    def __init__(self,name,position,hitbox):
-        #have marker ID OR Color, use move_object function to move
-        return 0
+    def __init__(self,name,hitbox,ID):
+        if hitbox['type']=='rectangle':
+            height = hitbox['height']
+            width  = hitbox['width']
+            area   = np.array([[0,0],[height,0],[height,width],[0,width]])
+        holes = np.array([1])
+        game_object.__init__(self,name,area,holes)
+
+        self.ID =ID
 
 
 class scene():
@@ -166,12 +172,14 @@ class scene():
     
     def __init__(self,game_object_list):
         self.game_objects={}
-        object_list = []
+        self.object_list = []
         for objects in game_object_list:
             self.game_objects[objects.name]= objects
-            object_list.append(objects.name)
+            self.object_list.append(objects.name)
+            if isinstance(objects,dynamic_object):
+               rospy.set_param(objects.name+"_id",objects.ID)
 
-        rospy.set_param("scene_objects",object_list)
+        rospy.set_param("scene_objects",self.object_list)
 
         pos_serv    = rospy.Service('set_position'  ,SetPos       ,self.handle_set_position)
         dist_serv   = rospy.Service('get_distance'  ,RequestDist  ,self.handle_get_distance)
@@ -180,6 +188,9 @@ class scene():
         rospy.spin()
 
     def __del__(self):
+        for elements in self.object_list:
+            if rospy.has_param(elements+"_id"):
+                rospy.delete_param(elements+"_id")
         if rospy.has_param("scene_objects"):
             rospy.delete_param("scene_objects")
 
@@ -313,6 +324,30 @@ class rogata_helper():
 
 
 
+
+def track_dynamic_object(gray_image,object_name):
+    #TODO read rosparams given object and call track_aruco_marker
+    #TODO set new position of object using service!
+    return 0
+    
+
+def track_aruco_marker(gray_image,marker_id):
+    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
+    parameters = aruco.DetectorParameters_create()
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray_image, aruco_dict, parameters=parameters)
+    try:
+        if marker_id not in ids:
+            return None
+        else:
+            indice=np.where(ids == marker_id)
+            center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
+            return center
+    except:
+        return None
+
+
+
+
 def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     """Detects the contour of an object containing a marker based on color
     
@@ -356,50 +391,35 @@ def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     
 
     #marker detection:
-    gray       = cv2.cvtColor(hsv_img,cv2.COLOR_BGR2GRAY)
-    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
-    parameters = aruco.DetectorParameters_create()
-    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters, ids=marker_id)
-    
-    if draw == True:
-        cv2.drawContours(hsv_img, contours, -1, (0,255,255),3)
-    try:
-        if ids.any() == None:
-            return None
-    except:
-        print("No Markers in this Image.")
-        print("Without Markers the Calibration can not be performed")
-        return None
-    if marker_id not in ids:
-        return None
-    else:
-        indice=np.where(ids == marker_id)
-        center = np.sum(corners[indice[0][0]][indice[1][0]],axis=0)/4
+    split_hsv = cv2.split(hsv_img)
+    gray    = split_hsv[2]
+    cv2.imshow("test_window",gray)
+    center  =  track_aruco_marker(gray,marker_id)
 
-
-    if draw == True:
-        cv2.circle(hsv_img,(center[0],center[1]),7,(90,255,255),7)
-
-    #TODO smallest contour should be real contour encompassing whole image
-    row, col =hsv_img.shape[:2]
-    smallest_contour = np.array([[0,0],[0,row],[col,row],[col,0]])
-    #TODO not needet with real contour
-    contour_found    = 0
-    for i in range(len(contours)):
-        marker_in_contour = True
-
-        for elements in corners[indice[0][0]][indice[1][0]]:
-            marker_in_contour = marker_in_contour and cv2.pointPolygonTest(contours[i],tuple(elements),False) > 0
-        marker_in_contour = marker_in_contour and cv2.contourArea(contours[i]) >= min_size
-        if  marker_in_contour:
-            if cv2.contourArea(contours[i]) <= cv2.contourArea(smallest_contour):
-                contour_found = 1
-                smallest_contour = contours[i]
-
-    if contour_found == 1:
+    if np.any(center != None):
         if draw == True:
-            cv2.drawContours(hsv_img, smallest_contour, -1, (90,255,255),6)
-        return smallest_contour
+            cv2.drawContours(hsv_img, contours, -1, (0,255,255),3)
+            cv2.circle(hsv_img,(center[0],center[1]),7,(90,255,255),7)
+
+        #TODO smallest contour should be real contour encompassing whole image
+        row, col =hsv_img.shape[:2]
+        smallest_contour = np.array([[0,0],[0,row],[col,row],[col,0]])
+        #TODO not needet with real contour
+        contour_found    = 0
+        for i in range(len(contours)):
+            marker_in_contour = True
+
+            marker_in_contour = cv2.pointPolygonTest(contours[i],tuple(center),False) > 0
+            marker_in_contour = marker_in_contour and cv2.contourArea(contours[i]) >= min_size
+            if  marker_in_contour:
+                if cv2.contourArea(contours[i]) <= cv2.contourArea(smallest_contour):
+                    contour_found = 1
+                    smallest_contour = contours[i]
+
+        if contour_found == 1:
+            if draw == True:
+                cv2.drawContours(hsv_img, smallest_contour, -1, (90,255,255),6)
+            return smallest_contour
 
     return None
 

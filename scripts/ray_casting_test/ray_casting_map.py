@@ -22,16 +22,20 @@ contour_array_r = [right_rock]
 name_r          = "right rock"
 hole_spec_r     = np.array([1])
 
+name_robot      = "robot"
+id_robot        = 6
+hit_box         = {"type":"rectangle","height":30,"width":30}
+
 white_hole_obj = rgt.game_object(name_w,contour_array_w,hole_spec_w)
 left_rock_obj  = rgt.game_object(name_l,contour_array_l,hole_spec_l)
 right_rock_obj = rgt.game_object(name_r,contour_array_r,hole_spec_r)
-
+robot_obj      = rgt.dynamic_object(name_robot,hit_box,id_robot)
 
 
 if __name__ == "__main__":
     try:
         rospy.init_node('rogata_engine',anonymous=True)
-        ray_casting_scene =rgt.scene([white_hole_obj,left_rock_obj,right_rock_obj])
+        ray_casting_scene =rgt.scene([white_hole_obj,left_rock_obj,right_rock_obj,robot_obj])
     except rospy.ROSInterruptException:
         pass
 
