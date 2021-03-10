@@ -63,7 +63,7 @@ The full theory behind the detection of game objects can be seen in `How it Work
 
 
 Calibrating the Arena
-*********************
+---------------------
 
 To calibrate the arena the calibrate_scene.py script can be used.
 It is called using:
@@ -80,9 +80,10 @@ The script will open a window where one can see the image of the scene as well a
 The first six sliders are used to select the color of the desired object.
 This color is specified in the HSV colorspace.
 HSV refers to Hue, Saturation and Value.
-A good visualisation of the HSV values can be seen in this image from its `wikipedia page <https://de.wikipedia.org/wiki/HSV-Farbraum>`_:
+A good visualisation of the HSV values can be seen in this image from its `wikipedia page <https://en.wikipedia.org/wiki/HSL_and_HSV>`_:
 
 .. image:: hsv_cone.jpg
+   :align: center
 
 For OpenCV, The Hue Range goes from 0-179 (which is half that of the common Hue definition which goes from 0 to 359). since the Hue value is cyclical, both these values represent a type of red.
 While the borders between colors is not clearly defined the following table with give an idea which hue values to pick for each object color
@@ -156,14 +157,14 @@ This can be circumvented by first setting up the walls and using an image of the
 
 
 Building Game Objects
-*********************
+---------------------
 Using the contours calibrated in the last section it is possible to set up game objects.
 
 
 
 
 Building a Scene
-***************
+----------------
 
 
 

@@ -52,14 +52,22 @@ Its documentation can be seen in :py:class`rogata_library.game_object`.
 
 
 Interacting with a Game Object
-******************************
-There are mutliple ways to interact with Game Objects
+------------------------------
+There are mutliple ways to interact with Game Objects.
+Since contrary to conventional game engines, graphic rendering and physics simulation is not needet, these focus mostly on detecting collisions and ray casting.
+
+A full overview of the functionality can be seen in :py:class`rogata_library.game_obects`.
+
 
 
 
 Dynamic Game Objects
-********************
+--------------------
+Dynamic Game Objects are a subclass of Game objects.
+They differ slightly in their initialisation sice they also keep track of a marker ID which the engine uses to update their position.
+Their contour is also build automatically using a the specifications of a hitbox.
 
+Currently only rectangular hitboxes are supported.
 
 Scenes
 ======
