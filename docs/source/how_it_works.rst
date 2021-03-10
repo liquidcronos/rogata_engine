@@ -94,7 +94,7 @@ In python the service can be set up and called using:
     resp         = set_position(req) 
 
 
-Its returned response is a ROS service message containing a boolean value which can be called using
+Its returned response is a ROS service message containing a boolean value which can be called using:
 ::
     
     resp.sucess
@@ -118,7 +118,7 @@ In python the service can be set up and called using:
     req       = RequestInterRequest(game_object,line,length)
     resp      = intersect(req)
 
-Its returned response is a ROS service message containing the position of the intersection. This intersection can be extracted using
+Its returned response is a ROS service message containing the position of the intersection. This intersection can be extracted using:
 ::
 
     INTERSECTION_POINT=np.array([resp.x,resp.y])
@@ -140,7 +140,7 @@ In python the service can be set up and called using:
     req          = RequestDistRequest(NAME,POINT[0],POINT[1])
     resp         = get_distance(req)
 
-It returns a ROS service message containing the distance. This distance can be extracted using
+It returns a ROS service message containing the distance. This distance can be extracted using:
 ::
 
    resp.distance 
@@ -169,7 +169,7 @@ It can be extracted using:
 
 .. note::
    The ROS communication interface is very versatile and allows the engine to interface not only with Python scripts but als C++ programms.
-   However it is also a bit cumbersome to use
+   However it is also a bit cumbersome to use.
    For this reason the :py:class:`rogata_library.rogata_helper` class can be initialized at the start of any python script. It directly implements the service setup and abstracts it using simple class functions 
 
 
