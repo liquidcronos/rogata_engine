@@ -138,21 +138,21 @@ If provided it saves the contour as a `.npy` object.
 
 This procedure can now be repeated for each contour.
 
-.. note::
-   If there are very small objects inside the scene such as walls or open contours such as the yellow one in the top left a trick can be emploxed.
-   Instead of using the color of the object, the color of the Ground can be used. 
-   This specifies a contour around the desired object which can then be selected.
 
-   However, in this case the border of the marker itself might count as a contour. To circumvent this the Minimum Contour Size slider can be used to specify the minimal size of the choosen contour.
-   This way it is poosible to select such open object:
+If there are very small objects inside the scene such as walls or open contours such as the yellow one in the top left a trick can be emploxed.
+Instead of using the color of the object, the color of the Ground can be used. 
+This specifies a contour around the desired object which can then be selected.
 
-   .. image::  lab_setup_left_yellow.png
+However, in this case the border of the marker itself might count as a contour. To circumvent this the Minimum Contour Size slider can be used to specify the minimal size of the choosen contour.
+This way it is poosible to select such open object:
 
-    However this trick might also select other game objects such as seen here when specifiny the contour of the wall:
+.. image::  lab_setup_left_yellow.png
 
-    .. image:: lab_setup_wall.png
+However this trick might also select other game objects such as seen here when specifiny the contour of the wall:
 
-    This can be circumvented by first setting up the walls and using an image of the arena with out the other objects.
+.. image:: lab_setup_wall.png
+
+This can be circumvented by first setting up the walls and using an image of the arena with out the other objects.
 
 
 Building Game Objects
