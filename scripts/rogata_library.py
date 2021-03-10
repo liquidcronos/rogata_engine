@@ -159,7 +159,6 @@ class game_object:
         #current_center   = self.get_position()
         for i in range(len(self.area)):
             centered_contour = self.area[i] - current_center
-            print(self.area[i],current_center)
             #xs, ys = centered_contour[:, 0], centered_contour[:, 1]
 
             #thetas, rhos = cart2pol(xs, ys)
@@ -211,8 +210,9 @@ class scene():
        
         publisher_dict={}
         for object_names in self.dynamic_object_list:
-            publisher_dict[object_names]=rospy.Publisher(object_names+"/odom",Odometry,queue_size=10)
+            publisher_dict[object_names]=rospy.Publisher(object_names+"/odom",Odometry,queue_size=1)
 
+        rate=rospy.Rate(30)  #hz
         while not rospy.is_shutdown():
             for object_names in self.dynamic_object_list:
                 current_object    = self.game_objects[object_names]
@@ -224,6 +224,7 @@ class scene():
                 position.pose.pose.position.y    = pose[1]
                 position.pose.pose.orientation.z = current_object.orientation
                 current_publisher.publish(position)
+            rate.sleep()
 
 
 

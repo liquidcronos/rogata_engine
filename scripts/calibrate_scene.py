@@ -24,7 +24,8 @@ def calibrate_colors(image):
     cv2.createTrackbar("V","Test image",0,255,nothing)
     cv2.createTrackbar("V range","Test image",0,120,nothing)
     cv2.createTrackbar("Marker Id","Test image",0,120,nothing)
-    cv2.createTrackbar("Minimum contour size","Test image",0,1200**2,nothing)
+    hight, width, channels = image.shape
+    cv2.createTrackbar("Minimum contour size","Test image",0,hight*width,nothing)
     while(1):
         k = cv2.waitKey(1)
         if k == 27:
@@ -46,7 +47,7 @@ def calibrate_colors(image):
 
         marker_id =           cv2.getTrackbarPos("Marker Id", "Test image")
 
-        min_size  =           cv2.getTrackbarPos('Minimum hole size','Test image')
+        min_size  =           cv2.getTrackbarPos('Minimum contour size','Test image')
 
         min_value    = np.zeros(3)
         min_value[0] = -179

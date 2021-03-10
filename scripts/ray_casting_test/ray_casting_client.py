@@ -23,6 +23,7 @@ cap    = cv2.VideoCapture('ray_casting.mp4')
 while(cap.isOpened()):
     ret, image = cap.read()
     gray       = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    
     rgt.track_dynamic_objects(gray,['robot'])
     
 
@@ -30,7 +31,6 @@ while(cap.isOpened()):
     test_point=np.array([0,0])
 
     length    = 300
-
     for i in range(36):
         objects     = np.array(['white hole','right rock','left rock'])
         color_array = np.array([[255,0,0],[0,255,0],[0,0,255]])
