@@ -1,3 +1,7 @@
+
+.. image:: rogata_title_turtle.png
+
+
 What is the RoGaTa Engine?
 **************************
 
