@@ -127,7 +127,7 @@ If placed inside the desired object, the contour can be selected by specifing th
 .. note::
    It is possible to directly specifing values by clicking on the slider values on the left
 
-Selecting Marker 0 results in the following image:
+Selecting Marker 1 results in the following image:
 
 .. image:: lab_setup_marker_z.png
 
