@@ -56,7 +56,7 @@ Interacting with a Game Object
 There are mutliple ways to interact with Game Objects.
 Since contrary to conventional game engines, graphic rendering and physics simulation is not needet, these focus mostly on detecting collisions and ray casting.
 
-A full overview of the functionality can be seen in :py:class:`rogata_library.game_obects`.
+A full overview of the functionality can be seen in :py:class:`rogata_library.game_object`.
 
 
 
@@ -73,14 +73,14 @@ Scenes
 ======
 Scenes are the equivalent of  video game levels.
 A scene defines which game objects are currently loaded and offers the functionality to interact with them.
-As such it is initalized using a list of  :py:class:`rogata_library.game_obect`.
+As such it is initalized using a list of  :py:class:`rogata_library.game_object`.
 
 Using the objects, a scene offers a number of ROS communication schemes that allow other nodes to interact with the game objects.
-These include the following `ROS services <http://wiki.ros.org/Services>`:
+These include the following `ROS services <http://wiki.ros.org/Services>`_:
 
 set_position
 ^^^^^^^^^^^^
-This services allows any ROS node to change the position of a game_object by providing the desired objects name `NAME` and a new position `POS`.
+This services allows any ROS node to change the position of a game_object by providing the desired objects name ``NAME`` and a new position ``POS``.
 In python the service can be set up and called using:
 ::
     
@@ -102,7 +102,7 @@ Its returned response is a ROS service message containing a boolean value which 
 
 intersect_line
 ^^^^^^^^^^^^^^
-This service allows any ROS node to calculate the intersection of a line with starting point `START`, direction `THETA`  and length `LENGTH` and a desired object with name `NAME`.
+This service allows any ROS node to calculate the intersection of a line with starting point ``START``, direction ``THETA``  and length ``LENGTH`` and a desired object with name ``NAME``.
 In python the service can be set up and called using:
 ::
     
@@ -125,7 +125,7 @@ Its returned response is a ROS service message containing the position of the in
 
 get_distance
 ^^^^^^^^^^^^
-This service allows any ROS node to get the shortest distance between a point `POINT` and the border of an object with name `NAME`
+This service allows any ROS node to get the shortest distance between a point ``POINT`` and the border of an object with name ``NAME``
 .. warning::
     Note that this means the distance is positive even if the point is inside the object!
 
@@ -149,7 +149,7 @@ It returns a ROS service message containing the distance. This distance can be e
 
 check_inside
 ^^^^^^^^^^^^
-This service allows any ROS node to check wheter a given point `POINT` is inside a object with name `NAME`
+This service allows any ROS node to check wheter a given point ``POINT`` is inside a object with name ``NAME``
 In python the service can be set up and called using:
 ::
     
@@ -170,7 +170,7 @@ It can be extracted using:
 .. note::
    The ROS communication interface is very versatile and allows the engine to interface not only with Python scripts but als C++ programms.
    However it is also a bit cumbersome to use
-   For this reason the :py:class:`rogata_helper` class can be initialized at the start of any python script. It directly implements the service setup and abstracts it using simple class functions 
+   For this reason the :py:class:`rogata_library.rogata_helper` class can be initialized at the start of any python script. It directly implements the service setup and abstracts it using simple class functions 
 
 
 
