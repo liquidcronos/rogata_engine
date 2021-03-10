@@ -55,4 +55,14 @@ Detecing the object borders
 ---------------------------
 Using a color range specified in HSV values (which are better at detecting colors in different lighting conditions since the Hue of the color is independent from its Saturation and Value) a mask of all objects can be generated which share the specified color.
 
+In order to selecdt the wanted objects, a marker can be placed in the scene. 
+This way the contour is identified as the smallest contour in the image still containing the marker.
+
+All detected borders of an image can be saved and later be used to initialize the game objects.
+More information can be found in the getting started section.
+
+
+Tracking dynamic objects
+------------------------
+
 
