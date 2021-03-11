@@ -120,7 +120,8 @@ In python the service can be set up and called using:
 
 Its returned response is a ROS service message containing the position of the intersection. This intersection can be extracted using:
 ::
-
+    
+    import numpy as np
     INTERSECTION_POINT=np.array([resp.x,resp.y])
 
 get_distance
