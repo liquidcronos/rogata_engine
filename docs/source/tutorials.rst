@@ -6,8 +6,6 @@ Tutorials
    
 
 
-Simple Line of Sight Calculation
-================================
 
 
 Simple Scoreboards
@@ -135,6 +133,33 @@ This allows any other ROS node to check the score of a given player with name ``
 
     rospy.get_param(PLAYERNAME/score)
 
+
+Simple Line of Sight Calculation
+================================
+Another Common Problem is line of sight calculation.
+While robots can do line of sight calcualtion with an on board camera this requires object detection.
+The RoGaTa engines, allows to circumvent these requirements by using line interesection.
+This allows the design of stealth like games where a ``thief`` has to enter a area undetected by one or more ``guards``.
+To calulate wheter a ``guard`` can see a ``thief`` the following function can be used:
+::
+
+    import numpy as np
+    import rogata_library as rgt
+
+    rogata = rgt.rogata_helper()
+
+    def visibility(guard,thief):
+        distance   = np.linalg.norm(thief-guard)
+        dir_vector = -guard+thief
+        direction  = np.arctan2(dir_vector[1],dir_vector[0])
+
+        seeing_distance = rogata.intersect(rogata.available_objects[0],guard,direction,800)
+        if np.linalg.norm(seeing_distance-guard) >= distance:
+            return 1
+        else:
+            return 0
+
+Here the ``rogata_helper`` class is used in order to abstract the ``get_intersection`` service of the engine.
 
 
 
