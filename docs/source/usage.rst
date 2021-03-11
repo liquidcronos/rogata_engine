@@ -49,6 +49,29 @@ If everything is correctly installed, the following command should change the cu
 
 Setting up the Game Area
 ========================
+The first step in actually using the engine is to set up the game area.
+Since the Egine needs a camera to calibrate itself and track  at least one :py:class:`rogata_library.dynamic_object`, the first step is setting up a camera.
+
+The Camera needs to be affixed  above the game area perpendicular to the ground.
+In General the higher up the camera the better since it leads to a larger game area. 
+However it aslo decreases the precision of the object tracking.
+This also means that bigger markers have to be used.
+This can ofcourse be circumvented by using a higher resolution camera. 
+Since higher resolution pictures take longer to process this could however slow down the engine depending on the computer its running on.
+
+
+.. note::
+   Once the camera is set up, a picture of the game area can be taken. Such a picture can be used as a reference for the size of the game area.
+   This prevents setting up game objects which end up partially outside of the camera view.
+
+After the camera is installed the area itself has to be prepared.
+Given a desired laylout of static objects, color has to be applied to the ground to mark the objects borders.
+The easiest way to  do this is using colored tape.
+
+The colors of the tape should be choosen to strongly contrast the grounds hue.
+A example of a prepared game area can be seen below.
+
+.. image lab_setup_side.png
 
 
 
@@ -179,7 +202,9 @@ the first step in setting up the objects is loading the contour objects saved by
     # Setting up the line of sight breakers
     large_polygon = np.load('red_polygon.npy')
     floor_trick   = np.load('floor.npy')
-    los_breakers  = rgt.game_object('line_of_sight_breakers',[large_polygon,floor_trick],np.array([1,-1])
+    los_breakers  = rgt.game_object('line_of_sight_breakers',
+                                    [large_polygon,floor_trick],
+                                    np.array([1,-1])
 
 
 Setting up the first object is rather straight forward, the contours are loaded and are used to initialize the game object.
@@ -232,7 +257,9 @@ This scene can now be packacked inside a ROS Node:
     # Setting up the line of sight breakers
     large_polygon = np.load('red_polygon.npy')
     floor_trick   = np.load('floor.npy')
-    los_breakers  = rgt.game_object('line_of_sight_breakers',[large_polygon,floor_trick],np.array([1,-1])
+    los_breakers  = rgt.game_object('line_of_sight_breakers',
+                                    [large_polygon,floor_trick],
+                                    np.array([1,-1])
 
 
     # Setting up the robot object
