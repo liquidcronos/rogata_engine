@@ -159,12 +159,124 @@ This can be circumvented by first setting up the walls and using an image of the
 Building Game Objects
 ---------------------
 Using the contours calibrated in the last section it is possible to set up game objects.
+The architectire of the game objects is described in the how it works section.
+In the above example, the game area has two objects, the yellow ``goals`` and the red ``line of sight breakers``
+
+.. note::
+   One can ofcourse also have mutliple objects of the same color. This is however only advisable if they behave similarly as it might otherwise be confusing when playing or observing a game.
+
+the first step in setting up the objects is loading the contour objects saved by ``calibrate_scene``:
+::
+    import rogata_library as rgt
+    import numpy as np
+
+    # Setting up the goal object
+    left_goal  = np.load('left_yellow_rectangle.npy')
+    right_goal = np.load('right_yellow_rectangle.npy')
+    goals      = rgt.game_object('goals',[left_goal,right_goal],np.array([1,1]))
 
 
+    # Setting up the line of sight breakers
+    large_polygon = np.load('red_polygon.npy')
+    floor_trick   = np.load('floor.npy')
+    los_breakers  = rgt.game_object('line_of_sight_breakers',[large_polygon,floor_trick],np.array([1,-1])
+
+
+Setting up the first object is rather straight forward, the contours are loaded and are used to initialize the game object.
+The object hierachy is [1,1], since both objects are simple objects sitting side by side.
+
+For the ``line of sight breakers`` however the the floor contour trick was used. Since this mapped the inverse of the red object, so long as one is within the floor contour one is not inside a ``line of sight breaker``. For this reason the object gets a contour hierachy of -1.
+
+.. warning::
+   This only works because the Floor poylgon does not include the large red polygon. If the floor contour was saved before the polygon was drawn, inside the polygon would also register as being outside of the object!
+
+In addition to the static objects on the floor, robots themself also need to be set up as a dynamic object.
+Assuming the Robot is equipped with a marker with ID 6, it can be initialized using:
+::
+    
+    # Setting up the robot object
+    name      = "pioneer_robot"
+    id        = 6
+    hit_box   = {"type":"rectangle","height",30,"width":30}
+    robot_obj = rgt.dynamic_object(name,hit_box,id)
+
+
+the hitbox specifies the space the robot takes up in the arena.
+For now this has to be set manualy, however a future script similar to ``calbibrate_scene.py`` is planned.
 
 
 Building a Scene
 ----------------
+
+Using these two objects a scene can now be built witch enables the basic functionalities of the engine.
+It can be set up using:
+::
+
+    example_scene =rgt.scene([goals,los_breakers,robot_obj])
+
+This scene can now be packacked inside a ROS Node:
+::
+
+    #!/usr/bin/env python
+    import numpy as np
+    import rogata_library as rgt
+    import rospy
+
+
+    # Setting up the goal object
+    left_goal  = np.load('left_yellow_rectangle.npy')
+    right_goal = np.load('right_yellow_rectangle.npy')
+    goals      = rgt.game_object('goals',[left_goal,right_goal],np.array([1,1]))
+
+
+    # Setting up the line of sight breakers
+    large_polygon = np.load('red_polygon.npy')
+    floor_trick   = np.load('floor.npy')
+    los_breakers  = rgt.game_object('line_of_sight_breakers',[large_polygon,floor_trick],np.array([1,-1])
+
+
+    # Setting up the robot object
+    name      = "pioneer_robot"
+    id        = 6
+    hit_box   = {"type":"rectangle","height",30,"width":30}
+    robot_obj = rgt.dynamic_object(name,hit_box,id)
+
+
+    if __name__ == "__main__":
+        try:
+            rospy.init_node('rogata_engine')
+            example_scene =rgt.scene([goals,los_breakers,robot_obj])
+        except rospy.ROSInterruptException:
+            pass
+
+The node can be started with:
+::
+
+    rosrun PACKAGE_NAME SCRIPT_NAME.py
+
+More information about ROS and what a ``Package`` is can be found in the `ROS tutorials <http://wiki.ros.org/ROS/Tutorials>`_.
+It is strongly encouraged that one familiarizes himself with ROS before trying to use the RoGaTa Engine.
+
+If the scene is initalized correctly it should publish the position of the robot and provide a multitude of service.
+The existence of the publisher can be checked using 
+::
+
+    rostopic echo /pioneer_robot/odom
+
+Which should return odometry values.
+The services offered by the engine can be checked using
+::
+
+    rosservice list
+
+These should include:
+ * set_position
+ * get_distance
+ * intersect_line
+ * check_inside
+
+
+
 
 
 
