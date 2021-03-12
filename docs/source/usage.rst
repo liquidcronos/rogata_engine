@@ -71,7 +71,7 @@ The easiest way to  do this is using colored tape.
 The colors of the tape should be choosen to strongly contrast the grounds hue.
 A example of a prepared game area can be seen below.
 
-.. image lab_setup_side.png
+.. image:: lab_setup_side.png
 
 
 
@@ -281,6 +281,12 @@ The node can be started with:
 
     rosrun PACKAGE_NAME SCRIPT_NAME.py
 
+
+But in order to be recognized the node first has to be made executable using the following command:
+::
+
+    chmod +x SCRIPT_NAME.py
+
 More information about ROS and what a ``Package`` is can be found in the `ROS tutorials <http://wiki.ros.org/ROS/Tutorials>`_.
 It is strongly encouraged that one familiarizes himself with ROS before trying to use the RoGaTa Engine.
 
@@ -304,8 +310,56 @@ These should include:
 
 
 
+Tracking Dynamic Objects
+------------------------
+The Tracking of dynamic objects while a game is running was consciously decoupled from the scene node, because there are multipe approaches suited for different use cases.
+
+If the objects should be tracked with a camera, the :py:method:`rogata_library.track_dynamic_objects` function can be used.
+Using a grayscale image it is able to track a list of dynamic objects.
+To use it with ROS one can use `cv_bridge <http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython>`_ to convert published Images of a camera node into usable images:
+::
+
+    #!/usr/bin/env python
+    import sys
+    import cv2
+    import rospy
+    import rogata_library as rgt
+    from sensor_msgs.msg import Image
+    from cv_bridge import CvBridge
+    import numpy as np
 
 
+
+    def img_call(ros_img,object_name_list):
+        cv_img = bridge.imgmsg_to_cv2(ros_img,'mono8')
+            rgt.track_dynamic_objects(cv_img,object_name_list)
+
+
+
+    if __name__ == '__main__':
+        try:
+            rospy.init_node("Dynamic Object Tracker")
+                    bridge       = CvBridge()
+                    object_numb  = len(sys.argv)
+                    object_list  = [sys.argv[i] for i in range(2,object_numb)]
+            cam_sub      = rospy.Subscriber(sys.argv[1],Image,img_call,object_list)
+            rospy.spin()
+        except rospy.ROSInterruptException:
+            rospy.loginfo("Dynamic Object Tracker  Node not working")
+
+However it is also possible to use the track_image function on a prerecorded video.
+In some cases, however tracking with a camera is not benefficial.
+Which is why in general own functions can be written to track such objects. They can then update the Position of the objects using the ``set_position`` service.
+
+A example of such a scenario is inside a simulation such as gazebo.
+When setting up a scene in Gazebo, one can simply use any image to set up the scene.
+This image will later be used as a ground texture for the simulation enviroment.
+A tutorial of how to do this in Gazebo can be found `here <https://answers.gazebosim.org//question/4761/how-to-build-a-world-with-real-image-as-ground-plane/>`_.
+
+In ROS the position of every robot can now imediately be read, the only thing left to do is write a node that converts these positions from the world frame into the image frame and updates the positions of the dynamic objects.
+The conversion from frame to frame can be caluculated by moving the robot onto the markers in the image and reading out the position of the robot in gazebo.
+
+.. image:: gazebo_lgs.png
 
 
 
