@@ -361,5 +361,4 @@ The conversion from frame to frame can be caluculated by moving the robot onto t
 
 .. image:: gazebo_lgs.png
 
-
-
+Example code for this calulation and conversion is planned for future releases.

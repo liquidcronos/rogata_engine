@@ -168,4 +168,10 @@ If there is an intersection beween the ``guard`` and the ``thief`` the line of s
 Otherwise the two see each other and the function returns ``True``.
 
 
+Changing the Robots Dynamics
+============================
+The Purpose of a game engine is of course not only to observer the movement of robots, but also to influence it.
+The simplest use case is to change the dynamics of a robot depending on which area it is in.
+This might mean slowing down the robot when he goes off a `track`, or making him unable to turn while on `ice`.
 
+In both cases this is achieved by writing a dynamics node which offers a fake command velocity subscriber and which then publishes to the ``cmd_vel`` topic of the robot.
