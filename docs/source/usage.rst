@@ -311,7 +311,7 @@ These should include:
 
 
 Tracking Dynamic Objects
-------------------------
+========================
 The Tracking of dynamic objects while a game is running was consciously decoupled from the scene node, because there are multipe approaches suited for different use cases.
 
 If the objects should be tracked with a camera, the :py:method:`rogata_library.track_dynamic_objects` function can be used.
