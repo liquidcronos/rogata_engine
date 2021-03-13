@@ -366,7 +366,7 @@ class rogata_helper():
 
 
 
-def track_dynamic_objects(gray_image,object_name_list,A=np.eye(3)):
+def track_dynamic_objects(gray_image,object_name_list):
     """Function which automatically tracks a list of :py:class:`game_object'  that are part of a :py:class:`scene`
 
     """
