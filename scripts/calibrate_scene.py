@@ -27,15 +27,6 @@ def calibrate_colors(image):
     hight, width, channels = image.shape
     cv2.createTrackbar("Minimum contour size","Test image",0,hight*width,nothing)
     while(1):
-        k = cv2.waitKey(1)
-        if k == 27:
-            break
-        if k == ord('s'):
-            print("Please Enter a File name:")
-            file_name = raw_input()
-            np.save(file_name,find_contour)
-            print("File ",file_name," saved.")
-
 
         mid_color = np.array([cv2.getTrackbarPos("H","Test image"),
                               cv2.getTrackbarPos("S","Test image"),
@@ -61,7 +52,15 @@ def calibrate_colors(image):
         find_contour = rgt.detect_area(hsv_img,lower_bound,upper_bound,marker_id,min_size,True)
         natural_img  = cv2.cvtColor(hsv_img,cv2.COLOR_HSV2BGR)
         cv2.imshow("Test image",natural_img)
-
+        
+        k = cv2.waitKey(1)
+        if k == 27:
+            break
+        if k == ord('s'):
+            print("Please Enter a File name:")
+            file_name = raw_input()
+            np.save(file_name,find_contour)
+            print("File ",file_name," saved.")
 
 
 if __name__ == "__main__":
