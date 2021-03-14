@@ -1,4 +1,5 @@
-from ..scripts import rogata_library as rgt
+#!/usr/bin/env python
+import rogata_library as rgt
 import cv2
 import cv2.aruco as aruco
 import numpy as np
