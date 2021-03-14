@@ -46,6 +46,19 @@ If everything is correctly installed, the following command should change the cu
 .. _catkin tutorial: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
 
+After the package is correctly installed, the python library has to be installed in order to import it into custom scripts.
+This is done by navigating to the root of the package and calling:
+::
+
+    sudo pip install src/
+
+If the library is correctly installed, it should be possible to import it in python by calling
+::
+
+    import rogata_library as rgt
+
+
+
 
 Setting up the Game Area
 ========================
