@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 setup(name='rogata_library',
 version='0.9',
 description='Robotic Games Tabletop Engine',
