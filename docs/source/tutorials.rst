@@ -211,7 +211,8 @@ Where ``object_list`` is a list containing the names of the objects with witch t
 Lastly ``test_point`` is the origin of the laser scanner in the game area.
 The result of the function is visualized in the following function, where a angle range in 10 degree increments was choosen.
 
-.. image:: ray_casting_experiment.gif
+.. image:: ray_casting_example.gif
+   :align: center
 
 .. note::
    The Stray blue line in the left top corner is a artefact of suboptimal marker placement with meant that the contour of the outside wall goes around the marker.

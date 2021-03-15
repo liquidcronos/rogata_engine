@@ -170,7 +170,29 @@ class game_object:
             self.area[i]=centered_contour+new_pos
 
 class dynamic_object(game_object):
-    """ """
+    """A subclass of the basic :py:class:`game_object`. 
+
+    Dynamic objects are able to change their position and can be tracked via aruco markers.
+    Their current position is published by each :py:class`scene` containing them.
+
+    Instead of initializing the object using a contour a dictionary describing a hitbox needs to be provided.
+    The dynamic object then builds the contour.
+
+    Currently only rectangular hitboxes are supported. The dictionary of such a hitbox can be set up as follows:
+    ::
+
+        {'type':'rectangle','height':HEIGHT,'width':WIDTH}
+
+    Where HEIGHT and WIDTH are the objects height and width in the game area.
+
+
+    :param string name: The name of the object
+    :param hitbox: A dictionary describing the shape of the objects contour
+    :type hitbox: dictionary
+    :param ID: The ID of an aruco marker which can be used to track the object
+    :param initial_ori: The inital orientation of the object in radians. Standart value is 0
+    ;type number:
+    """
     def __init__(self,name,hitbox,ID,initial_ori=0):
         if hitbox['type']=='rectangle':
             height = hitbox['height']
@@ -187,6 +209,9 @@ class dynamic_object(game_object):
 class scene():
     """A class implemennting scene objects comprised of multiple :py:class:`game_object` objects.
     It offers Ros Client interfaces which allow other nodes to request information about the game objects.
+    the communication interfaces are described in the `documentation <https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#scenes>`_
+
+    :param game_object_list: A list of containing  :py:class`game_object` objects.
     """
     
     def __init__(self,game_object_list):
@@ -367,7 +392,13 @@ class rogata_helper():
 
 
 def track_dynamic_objects(gray_image,object_name_list):
-    """Function which automatically tracks a list of :py:class:`game_object'  that are part of a :py:class:`scene`
+    """Function which automatically tracks a list of :py:class:`dynamic_object`  that are part of a :py:class:`scene`
+
+    The functions returns no position and instead updates the internal state of each :py:class:`dynamic_object`.
+    This position can be accessed using the interfaces of the :py:class:`scene` containing the objects.
+
+    :param gray_image: A grayscale image in which the objects should be tracked
+    :param object_name_list: A list of containing the names of the objects that should be tracked
 
     """
 
@@ -394,6 +425,16 @@ def track_dynamic_objects(gray_image,object_name_list):
     
 
 def track_aruco_marker(gray_image,marker_id_list):
+    """Tracks a list of aruco markers
+
+    Returns None if the marker was not found in gray_image
+
+    :param gray_image: A grayscale image in which the marker is to be found
+    :param marker_id_list: A list of marker ids
+    :type marker_id_list: list of numbers
+
+    :returns: A dictionary of marker positions with the marker_ids as keys
+    """
     aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
     parameters = aruco.DetectorParameters_create()
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray_image, aruco_dict, parameters=parameters)
@@ -432,8 +473,7 @@ def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
     :param hsv_img: 
     :param min_size: 
     :param draw:  (Default value = False)
-
-    
+ 
     """
 
     # color detection
