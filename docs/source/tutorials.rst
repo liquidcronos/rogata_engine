@@ -170,6 +170,51 @@ Otherwise the two see each other and the function returns ``True``.
 A visualization of the algorithm can be seen here:
 
 .. image:: visibility_example.gif
+   :algin: center
+
+
+Ray Casting
+===========
+
+A laserscanner is a common tool for mobile robots which enables the use of SLAM algorithms and general navigation.
+However to use such algorithms one has to build up phyiscal walls.
+Additionally some robots may not have such sensors.
+
+In both cases it might be beneficial to simulate a laser scanner that interacts with game objects.
+This can be done using the ray casting functionality the engine provides.
+A simple example of such a code can be seen here:
+::
+
+    def laser_scanner(object_list,test_point,angles):
+        scan = np.zeros((len(angles),2))
+        for i in angles:
+            end_point = np.array([100000,100000])
+            for k in range(len(objects)):
+                line      = Pose2D(test_point[0],test_point[1],i)
+                name=String()
+                name.data = objects[k]
+                req       = RequestInterRequest(str(objects[k]),line,length)
+                response  = inters(req)
+                new_point = np.array([response.x,response.y])
+
+                if np.linalg.norm(new_point-test_point) <= np.linalg.norm(end_point-test_point):
+                    end_point = new_point
+
+            scan[i,:] = end_point 
+
+Where ``object_list`` is a list containing the names of the objects with witch the laser scanner should intersect and ``angles`` a list of directions in which the laser scanner measures its distance. This direction is provided using a angle in radians convention.
+
+.. warning::
+   Since a ray is cast out for each object to intersect with, the speed of the function scales with the number of objects.
+   For this reason, all walls should be defined in as few objects as possible to preserve performance.
+
+Lastly ``test_point`` is the origin of the laser scanner in the game area.
+The result of the function is visualized in the following function, where a angle range in 10 degree increments was choosen.
+
+.. image:: ray_casting_experiment.gif
+
+.. note::
+   The Stray blue line in the left top corner is a artefact of suboptimal marker placement with meant that the contour of the outside wall goes around the marker.
 
 Changing the Robots Dynamics
 ============================
