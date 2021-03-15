@@ -327,7 +327,7 @@ Tracking Dynamic Objects
 ========================
 The Tracking of dynamic objects while a game is running was consciously decoupled from the scene node, because there are multipe approaches suited for different use cases.
 
-If the objects should be tracked with a camera, the :py:method:`rogata_library.track_dynamic_objects` function can be used.
+If the objects should be tracked with a camera, the :py:function:`rogata_library.track_dynamic_objects` function can be used.
 Using a grayscale image it is able to track a list of dynamic objects.
 To use it with ROS one can use `cv_bridge <http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython>`_ to convert published Images of a camera node into usable images:
 ::
