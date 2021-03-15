@@ -170,7 +170,7 @@ Otherwise the two see each other and the function returns ``True``.
 A visualization of the algorithm can be seen here:
 
 .. image:: visibility_example.gif
-   :algin: center
+   :align: center
 
 
 Ray Casting
