@@ -167,6 +167,9 @@ Since multiple such ``walls`` could exist, the system accepts a list called ``wa
 If there is an intersection beween the ``guard`` and the ``thief`` the line of sight is broken and the function returns ``False``.
 Otherwise the two see each other and the function returns ``True``.
 
+A visualization of the algorithm can be seen here:
+
+.. image:: visibility_example.gif
 
 Changing the Robots Dynamics
 ============================
