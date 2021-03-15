@@ -197,7 +197,7 @@ class scene():
             self.game_objects[objects.name] = objects
             self.object_list.append(objects.name)
             if isinstance(objects,dynamic_object):
-               rospy.set_param(objects.name+"_id",objects.ID)
+               rospy.set_param(objects.name+"/id",objects.ID)
                self.dynamic_object_list.append(objects.name)
 
 
