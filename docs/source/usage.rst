@@ -371,7 +371,10 @@ A tutorial of how to do this in Gazebo can be found `here <https://answers.gazeb
 
 In ROS the position of every robot can now immediately be read, the only thing left to do is write a node that converts these positions from the world frame into the image frame and updates the positions of the dynamic objects.
 The conversion from frame to frame can be calculated by moving the robot onto the markers in the image and reading out the position of the robot in Gazebo.
+Using the position ``x_i`` in of the i-th Marker and the corresponding position ``y_i`` of the robot inside the simulation.
+The 3x3 Transformation Matrix ``A`` can be calulated from the following systems of linear equations
 
 .. image:: gazebo_lgs.png
+   :align: center
 
 Example code for this calculation and conversion is planned for future releases.
