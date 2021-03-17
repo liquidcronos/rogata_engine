@@ -7,10 +7,10 @@ Getting Started
 
 
 
-The RoGaTa engine build upon `Ros Melodic`_ to interface with the robots, and `OpenCV-Python`_ to calibrate the arena and track all dynamic objects.
+The RoGaTa engine builds upon `Ros Melodic`_ to interface with the robots, and `OpenCV-Python`_ to calibrate the arena and track all dynamic objects.
 The first step is thus to install ROS on all robots as well as the host PC. 
 
-The host PC refers in this case to the PC which runs the engine which means that additonally OpenCV has to be installed there.
+The host PC refers in this case to the PC which runs the engine which means that additionally OpenCV has to be installed there.
 
 
 
@@ -22,19 +22,19 @@ The host PC refers in this case to the PC which runs the engine which means that
 
 
 
-Setting up the Enviroment
-=========================
+Setting up the Environment
+==========================
 Once ROS and OpenCV are installed the environment of the engine has to be set up.
-First a catkin workspace has to be created.
+First, a catkin workspace has to be created.
 For this `catkin tutorial`_ can be followed.
 
-The RoGaTa Engine itself is a ROS package containing nodes for camera based sensing and a library that provides utilities for game development.
+The RoGaTa Engine itself is a ROS package containing nodes for camera-based sensing and a library that provides utilities for game development.
 The package has to be placed inside the ``catkin_ws/src`` directory::
 
     cd ~/catkin_ws/src
     git clone https://github.com/liquidcronos/RoGaTa-Engine
 
-Afterward the ``catkin_make`` command has to be called inside the ``catkin_ws`` directory::
+Afterward, the ``catkin_make`` command has to be called inside the ``catkin_ws`` directory::
 
     cd ..
     catkin_make
@@ -46,7 +46,7 @@ If everything is correctly installed, the following command should change the cu
 .. _catkin tutorial: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
 
-After the package is correctly installed, the python library has to be installed in order to import it into custom scripts.
+After the package is correctly installed, the python library has to be installed to import it into custom scripts.
 This is done by navigating to the root of the package and calling:
 ::
 
@@ -63,14 +63,14 @@ If the library is correctly installed, it should be possible to import it in pyt
 Setting up the Game Area
 ========================
 The first step in actually using the engine is to set up the game area.
-Since the Egine needs a camera to calibrate itself and track  at least one :py:class:`rogata_library.dynamic_object`, the first step is setting up a camera.
+Since the engine needs a camera to calibrate itself and track at least one :py:class:`rogata_library.dynamic_object`, the first step is setting up a camera.
 
-The Camera needs to be affixed  above the game area perpendicular to the ground.
+The Camera needs to be affixed above the game area perpendicular to the ground.
 In General the higher up the camera the better since it leads to a larger game area. 
-However it aslo decreases the precision of the object tracking.
+However, it also decreases the precision of the object tracking.
 This also means that bigger markers have to be used.
-This can ofcourse be circumvented by using a higher resolution camera. 
-Since higher resolution pictures take longer to process this could however slow down the engine depending on the computer its running on.
+This can of course be circumvented by using a higher resolution camera. 
+Since higher resolution pictures take longer to process this could however slow down the engine depending on the computer it's running on.
 
 
 .. note::
@@ -78,11 +78,11 @@ Since higher resolution pictures take longer to process this could however slow 
    This prevents setting up game objects which end up partially outside of the camera view.
 
 After the camera is installed the area itself has to be prepared.
-Given a desired laylout of static objects, color has to be applied to the ground to mark the objects borders.
-The easiest way to  do this is using colored tape.
+Given a desired layout of static objects, color has to be applied to the ground to mark the borders of the object.
+The easiest way to do this is using colored tape.
 
-The colors of the tape should be choosen to strongly contrast the grounds hue.
-A example of a prepared game area can be seen below.
+The colors of the tape should be chosen to strongly contrast the grounds hue.
+An example of a prepared game area can be seen below.
 
 .. image:: lab_setup_side.png
 
@@ -90,11 +90,11 @@ A example of a prepared game area can be seen below.
 
 Setting up a Scene
 ==================
-Scenes can be thought of as real life video game levels.
+Scenes can be thought of as real-life video game levels.
 A Scene is made up of multiple game objects whose position is determined by a camera above the physical level.
-Setting up a scene thus simply means getting the engine to recognize phyiscal objects as game objects.
+Setting up a scene thus simply means getting the engine to recognize physical objects as game objects.
 
-The RoGaTa engine uses a simple recognition based on an objects color.
+The RoGaTa engine uses a simple recognition based on the color of an object.
 The full theory behind the detection of game objects can be seen in `How it Works`_.
 
 
@@ -109,20 +109,20 @@ It is called using:
 
 Where ``PATH_TO_IMAGE`` is the path to an image of the scene.
 This image has to be captured with the same **stationary** camera used to later track dynamic objects.
-The script will open a window where one can see the image of the scene as well as a number of sliders:
+The script will open a window where one can see the image of the scene as well as several sliders:
 
 .. image:: calibrate_scene.png
 
 The first six sliders are used to select the color of the desired object.
 This color is specified in the HSV colorspace.
-HSV refers to Hue, Saturation and Value.
-A good visualisation of the HSV values can be seen in this image from its `wikipedia page <https://en.wikipedia.org/wiki/HSL_and_HSV>`_:
+HSV refers to Hue, Saturation, and Value.
+A good visualization of the HSV values can be seen in this image from its `wikipedia page <https://en.wikipedia.org/wiki/HSL_and_HSV>`_:
 
 .. image:: hsv_cone.jpg
    :align: center
 
 For OpenCV, The Hue Range goes from 0-179 (which is half that of the common Hue definition which goes from 0 to 359). since the Hue value is cyclical, both these values represent a type of red.
-While the borders between colors is not clearly defined the following table with give an idea which hue values to pick for each object color
+While the borders between colors are not clearly defined the following table gives an idea which hue values to pick for each object color
 
 +--------+-----------------+
 |Color   | Hue Value Range |
@@ -141,16 +141,16 @@ While the borders between colors is not clearly defined the following table with
 +--------+-----------------+
 
 Saturation and Value are defined from 0-255.
-The less saturated an image, the less colorfull it is.
+The less saturated an image, the less colorful it is.
 Additionally the lower its value, the darker it is.
 
-Due to different lighting conditions acroos the scene these last two values will vary for an object.
-For this reason each object also has a range slider.
-Each range `d`  specifies a acceptable color intervall of `[VALUE-0.5d, VALUE+0.5d]`
+Due to different lighting conditions across the scene, these last two values will vary for an object.
+For this reason, each object also has a range slider.
+Each range `d`  specifies an acceptable color interval of `[VALUE-0.5d, VALUE+0.5d]`
 Where `VALUE` is the value of the main slider.
 
 .. note::
-   For fast tuning it is advisable to first select the desrired hue value while setting the saturation and value ranges to maximum.
+   For fast tuning, it is advisable to first select the desired hue value while setting the saturation and value ranges to the maximum.
    From there it is easy to dial in the values until the desired object is selected.
 
 Example values for the sliders can be seen in the following image:
@@ -159,16 +159,16 @@ Example values for the sliders can be seen in the following image:
 
 As one can see there are multiple objects outlined in red.
 To pick the desired object to track, aruco markers are used.
-If placed inside the desired object, the contour can be selected by specifing the corresponding marker ID using the Marker ID slider.
+If placed inside the desired object, the contour can be selected by specifying the corresponding marker ID using the Marker ID slider.
 
 .. note::
-   It is possible to directly specifing values by clicking on the slider values on the left
+   It is possible to directly specify values by clicking on the slider values on the left
 
 Selecting Marker 1 results in the following image:
 
 .. image:: lab_setup_marker_z.png
 
-the currently selected contour is now highlighted in torquies.
+the currently selected contour is now highlighted in torques.
 It can now be saved by pressing `s` on the keyboard.
 The Terminal in which the `calibrate_scene.py` script was called will now ask for a file name.
 If provided it saves the contour as a `.npy` object.
@@ -176,30 +176,30 @@ If provided it saves the contour as a `.npy` object.
 This procedure can now be repeated for each contour.
 
 
-If there are very small objects inside the scene such as walls or open contours such as the yellow one in the top left a trick can be emploxed.
+If there are very small objects inside the scene such as walls or open contours such as the yellow one in the top left a trick can be employed.
 Instead of using the color of the object, the color of the Ground can be used. 
 This specifies a contour around the desired object which can then be selected.
 
-However, in this case the border of the marker itself might count as a contour. To circumvent this the Minimum Contour Size slider can be used to specify the minimal size of the choosen contour.
-This way it is poosible to select such open object:
+However, in this case, the border of the marker itself might count as a contour. To circumvent this the Minimum Contour Size slider can be used to specify the minimum size of the chosen contour.
+This way it is possible to select such open object:
 
 .. image::  lab_setup_left_yellow.png
 
-However this trick might also select other game objects such as seen here when specifiny the contour of the wall:
+However, this trick might also select other game objects such as seen here when specifying the contour of the wall:
 
 .. image:: lab_setup_wall.png
 
-This can be circumvented by first setting up the walls and using an image of the arena with out the other objects.
+This can be circumvented by first setting up the walls and using an image of the arena without the other objects.
 
 
 Building Game Objects
 ---------------------
 Using the contours calibrated in the last section it is possible to set up game objects.
-The architectire of the game objects is described in the how it works section.
+The architecture of the game objects is described in the how it works section.
 In the above example, the game area has two objects, the yellow ``goals`` and the red ``line of sight breakers``
 
 .. note::
-   One can ofcourse also have mutliple objects of the same color. This is however only advisable if they behave similarly as it might otherwise be confusing when playing or observing a game.
+   One can of course also have multiple objects of the same color. This is however only advisable if they behave similarly as it might otherwise be confusing when playing or observing a game.
 
 the first step in setting up the objects is loading the contour objects saved by ``calibrate_scene``:
 ::
@@ -223,12 +223,12 @@ the first step in setting up the objects is loading the contour objects saved by
 Setting up the first object is rather straight forward, the contours are loaded and are used to initialize the game object.
 The object hierachy is [1,1], since both objects are simple objects sitting side by side.
 
-For the ``line of sight breakers`` however the the floor contour trick was used. Since this mapped the inverse of the red object, so long as one is within the floor contour one is not inside a ``line of sight breaker``. For this reason the object gets a contour hierachy of -1.
+For the ``line of sight breakers`` however the floor contour trick was used. Since this mapped the inverse of the red object, so long as one is within the floor contour one is not inside a ``line of sight breaker``. For this reason, the object gets a contour hierarchy of -1.
 
 .. warning::
-   This only works because the Floor poylgon does not include the large red polygon. If the floor contour was saved before the polygon was drawn, inside the polygon would also register as being outside of the object!
+   This only works because the Floor polygon does not include the large red polygon. If the floor contour was saved before the polygon was drawn, inside the polygon would also register as being outside of the object!
 
-In addition to the static objects on the floor, robots themself also need to be set up as a dynamic object.
+In addition to the static objects on the floor, robots themself also need to be set up as a :py:class:`rogata_library.dynamic object`.
 Assuming the Robot is equipped with a marker with ID 6, it can be initialized using:
 ::
     
@@ -240,7 +240,7 @@ Assuming the Robot is equipped with a marker with ID 6, it can be initialized us
 
 
 the hitbox specifies the space the robot takes up in the arena.
-For now this has to be set manualy, however a future script similar to ``calbibrate_scene.py`` is planned.
+For now, this has to be set manually, however, a future script similar to ``calbibrate_scene.py`` is planned.
 
 
 Building a Scene
@@ -303,7 +303,7 @@ But in order to be recognized the node first has to be made executable using the
 More information about ROS and what a ``Package`` is can be found in the `ROS tutorials <http://wiki.ros.org/ROS/Tutorials>`_.
 It is strongly encouraged that one familiarizes himself with ROS before trying to use the RoGaTa Engine.
 
-If the scene is initalized correctly it should publish the position of the robot and provide a multitude of service.
+If the scene is initialized correctly it should publish the position of the robot and provide a multitude of services.
 The existence of the publisher can be checked using 
 ::
 
@@ -325,10 +325,10 @@ These should include:
 
 Tracking Dynamic Objects
 ========================
-The Tracking of dynamic objects while a game is running was consciously decoupled from the scene node, because there are multipe approaches suited for different use cases.
+The Tracking of dynamic objects, while a game is running, was consciously decoupled from the scene node, because there are multiple approaches suited for different use cases.
 
 If the objects should be tracked with a camera, the :py:function:`rogata_library.track_dynamic_objects` function can be used.
-Using a grayscale image it is able to track a list of dynamic objects.
+Using a grayscale image it can track a list of dynamic objects.
 To use it with ROS one can use `cv_bridge <http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython>`_ to convert published Images of a camera node into usable images:
 ::
 
@@ -360,18 +360,18 @@ To use it with ROS one can use `cv_bridge <http://wiki.ros.org/cv_bridge/Tutoria
         except rospy.ROSInterruptException:
             rospy.loginfo("Dynamic Object Tracker  Node not working")
 
-However it is also possible to use the track_image function on a prerecorded video.
-In some cases, however tracking with a camera is not benefficial.
-Which is why in general own functions can be written to track such objects. They can then update the Position of the objects using the ``set_position`` service.
+However, it is also possible to use the track_image function on a prerecorded video.
+In some cases, however, tracking with a camera is not beneficial.
+This is why in general own functions can be written to track such objects. They can then update the Position of the objects using the ``set_position`` service.
 
-A example of such a scenario is inside a simulation such as gazebo.
+An example of such a scenario is inside a simulation such as `Gazebo <http://gazebosim.org/>`_.
 When setting up a scene in Gazebo, one can simply use any image to set up the scene.
-This image will later be used as a ground texture for the simulation enviroment.
+This image will later be used as a ground texture for the simulation environment.
 A tutorial of how to do this in Gazebo can be found `here <https://answers.gazebosim.org//question/4761/how-to-build-a-world-with-real-image-as-ground-plane/>`_.
 
-In ROS the position of every robot can now imediately be read, the only thing left to do is write a node that converts these positions from the world frame into the image frame and updates the positions of the dynamic objects.
-The conversion from frame to frame can be caluculated by moving the robot onto the markers in the image and reading out the position of the robot in gazebo.
+In ROS the position of every robot can now immediately be read, the only thing left to do is write a node that converts these positions from the world frame into the image frame and updates the positions of the dynamic objects.
+The conversion from frame to frame can be calculated by moving the robot onto the markers in the image and reading out the position of the robot in Gazebo.
 
 .. image:: gazebo_lgs.png
 
-Example code for this calulation and conversion is planned for future releases.
+Example code for this calculation and conversion is planned for future releases.
