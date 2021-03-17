@@ -217,7 +217,7 @@ the first step in setting up the objects is loading the contour objects saved by
     floor_trick   = np.load('floor.npy')
     los_breakers  = rgt.game_object('line_of_sight_breakers',
                                     [large_polygon,floor_trick],
-                                    np.array([1,-1])
+                                    np.array([1,-1]))
 
 
 Setting up the first object is rather straight forward, the contours are loaded and are used to initialize the game object.
