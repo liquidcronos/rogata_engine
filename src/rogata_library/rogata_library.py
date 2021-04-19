@@ -492,7 +492,7 @@ def detect_area(hsv_img,lower_color,upper_color,marker_id,min_size,draw=False):
         mask =cv2.inRange(hsv_img,lower_color,upper_color)
 
     #TODO carefull depending on opencv version the return may be different
-    _,contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierachy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     
 
