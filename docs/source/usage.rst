@@ -235,7 +235,7 @@ Assuming the Robot is equipped with a marker with ID 6, it can be initialized us
     # Setting up the robot object
     name      = "pioneer_robot"
     id        = 6
-    hit_box   = {"type":"rectangle","height",30,"width":30}
+    hit_box   = {"type":"rectangle","height":30,"width":30}
     robot_obj = rgt.dynamic_object(name,hit_box,id)
 
 
@@ -278,7 +278,7 @@ This scene can now be packacked inside a ROS Node:
     # Setting up the robot object
     name      = "pioneer_robot"
     id        = 6
-    hit_box   = {"type":"rectangle","height",30,"width":30}
+    hit_box   = {"type":"rectangle","height":30,"width":30}
     robot_obj = rgt.dynamic_object(name,hit_box,id)
 
 

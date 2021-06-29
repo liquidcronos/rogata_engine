@@ -229,6 +229,7 @@ class scene():
         rospy.set_param("scene_objects",self.object_list)
 
         pos_serv    = rospy.Service('set_position'  ,SetPos       ,self.handle_set_position)
+        pos_g_serv  = rospy.Service('get_position'  ,GetPos       ,self.handle_get_position)
         dist_serv   = rospy.Service('get_distance'  ,RequestDist  ,self.handle_get_distance)
         inters_serv = rospy.Service('intersect_line',RequestInter ,self.handle_line_intersect)
         inside_serv = rospy.Service('check_inside'  ,CheckInside  ,self.handle_inside_check)
@@ -272,6 +273,17 @@ class scene():
         pos            = np.array([request.x,request.y])
         choosen_object.move_object(pos)
         return SetPosResponse(1)
+
+    def handle_get_position(self,request):
+        """Handles requests to ``get_position`` ROS service server
+
+        :param request:
+        :type request: GetPosRequest
+
+        """
+        choosen_object = self.game_objects[request.object]
+        pos            = choosen_object.get_position()
+        return GetPosResponse(pos[0],pos[1])
 
     def handle_line_intersect(self,request):
         """Handles requests to  the ``intersect_line`` ROS service server
@@ -324,6 +336,7 @@ class rogata_helper():
         self.available_objects=rospy.get_param("scene_objects")
 
         self.abstract_set_position   = rospy.ServiceProxy('set_position',SetPos,self.set_pos)
+        self.abstract_get_position   = rospy.ServiceProxy('get_position',GetPos,self.get_pos)
         self.abstract_line_intersect = rospy.ServiceProxy('intersect_line',RequestInter,self.intersect)
         self.abstract_get_distance   = rospy.ServiceProxy('get_distance',RequestDist,self.dist)
         self.abstract_check_inside   = rospy.ServiceProxy('check_inside',CheckInside,self.inside)
@@ -338,8 +351,19 @@ class rogata_helper():
 
         """
         req  = SetPosRequest(game_object,position[0],position[1])
-        resp = self.abstract_get_position(req)
+        resp = self.abstract_set_position(req)
         return resp
+
+    def get_pos(self,game_object):
+        """Abstracts the ``get_position`` ROS service communication to set the position of a :py:class:`game_object`
+
+        :param game_object: The name of the game object
+        :type game_object: string
+
+        """
+        req  = GetPosRequest(game_object)
+        resp = self.abstract_get_position(req)
+        return np.array([resp.x,resp.y])
 
     def intersect(self,game_object,start_point,direction,length):
         """Abstracts the ``intersect_line`` ROS service communication to get the intersection between a :py:class:`game_object` and a line
