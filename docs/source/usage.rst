@@ -378,8 +378,8 @@ Instead an arbitrary image can be used that is then set as the ground texture in
 A tutorial of how to do this can be found `here <https://answers.gazebosim.org//question/4761/how-to-build-a-world-with-real-image-as-ground-plane/>`_.
 
 All that remains is to convert the odometry positions of the simulation into pixel position in the game area.
-Given a specified 2 dimensional scale ``X_sim`` in meters in the simulation, and image dimensions ``X_game`` in pixels the conversion for a image point ``P_sim`` into a point ``P_game`` is calculated using:
+Given a specified 2 dimensional scale :math:`X_sim` in meters in the simulation, and image dimensions :math:`X_game` in pixels the conversion for a image point :math:`P_sim` into a point :math:`P_game` is calculated using:
 
-``P_game`` = ``[P_sim_x, -1*P_sim_y]* ||X_game||/||X_sim|| - X_game/2``
+:math:`P_game = [P_sim_x, -1*P_sim_y]* ||X_game||/||X_sim|| - X_game/2`
 
 
