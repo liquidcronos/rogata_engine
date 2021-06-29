@@ -295,8 +295,8 @@ class scene():
 
         """
         choosen_object = self.game_objects[request.object]
-        point          = np.array([reqest.x,request.y])
-        dist           = self.game_objects[choosen_object].shortest_distance(point)
+        point          = np.array([request.x,request.y])
+        dist           = choosen_object.shortest_distance(point)
         return RequestDistResponse(dist)
 
     def handle_inside_check(self,request):
