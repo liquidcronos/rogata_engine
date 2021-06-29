@@ -380,6 +380,6 @@ A tutorial of how to do this can be found `here <https://answers.gazebosim.org//
 All that remains is to convert the odometry positions of the simulation into pixel position in the game area.
 Given a specified 2 dimensional scale ``X_sim`` in meters in the simulation, and image dimensions ``X_game`` in pixels the conversion for a image point ``P_sim`` into a point ``P_game`` is calculated using:
 
-``P_game`` = ``[P_sim_x, -1*P_sim_y]* ||X_game||/||X_sim|| - X_game/2
+``P_game`` = ``[P_sim_x, -1*P_sim_y]* ||X_game||/||X_sim|| - X_game/2``
 
 
