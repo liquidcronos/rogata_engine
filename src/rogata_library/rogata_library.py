@@ -295,7 +295,7 @@ class scene():
 
         """
         choosen_object = self.game_objects[request.object]
-        point          = np.array([reqest.x,request.y])
+        point          = np.array([request.x,request.y])
         dist           = self.game_objects[choosen_object].shortest_distance(point)
         return RequestDistResponse(dist)
 
