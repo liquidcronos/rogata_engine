@@ -148,19 +148,24 @@ To calculate whether a ``guard`` can see a ``thief`` the following function can 
 
     rogata = rgt.rogata_helper()
 
-    def visibility(guard,thief,wall_objects,seeing_distance):
+    def visibility(guard,thief,wall_objects,max_seeing_distance):
         distance   = np.linalg.norm(thief-guard)
-        dir_vector = -guard+thief
-        direction  = np.arctan2(dir_vector[1],dir_vector[0])
+        direction  = (thief-guard)/distance
+        direction  = np.arctan2(direction[1],direction[0])
 
-        seeing_distance = seeing_distance
+        min_intersect = guard + max_seeing_distance * np.array([np.cos(direction),np.sin(direction)])
+
         for walls in wall_objects:
-            seeing_distance = min(seeing_distance,np.linalg.norm(rogata.intersect(walls,guard,direction,seeing_distance)))
 
-        if np.linalg.norm(seeing_distance-guard) >= distance:
+            intersection = rogata.intersect(walls,guard,direction,max_seeing_distance)
+            if np.linalg.norm(intersection-guard) <= np.linalg.norm(min_intersect-guard):
+                min_intersect = intersection
+
+        if np.linalg.norm(min_intersect-guard) >= distance:
             return 1
         else:
             return 0
+
 
 Here the ``rogata_helper`` class is used to abstract the ``get_intersection`` service of the engine.
 The Function defines a line between ``guard`` and ``thief`` and checks if this line is intersected by an object that is not see-through.
