@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   SetPos.srv
+  GetPos.srv
   RequestDist.srv
   RequestInter.srv
   CheckInside.srv
