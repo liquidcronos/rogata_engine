@@ -364,17 +364,22 @@ However, it is also possible to use the track_image function on a prerecorded vi
 In some cases, however, tracking with a camera is not beneficial.
 This is why in general own functions can be written to track such objects. They can then update the Position of the objects using the ``set_position`` service.
 
-An example of such a scenario is inside a simulation such as `Gazebo <http://gazebosim.org/>`_.
-When setting up a scene in Gazebo, one can simply use any image to set up the scene.
-This image will later be used as a ground texture for the simulation environment.
-A tutorial of how to do this in Gazebo can be found `here <https://answers.gazebosim.org//question/4761/how-to-build-a-world-with-real-image-as-ground-plane/>`_.
+# Using the Engine in Gazebo
+One possible for such a scenario would be when using the engine inside a simulation such as `Gazebo <http://gazebosim.org/>`_.
+While a simulation already provides much of the tools the rogata engine provides it might be beneficial to be able to simulate a given game before implementing it in the real arena.
 
-In ROS the position of every robot can now immediately be read, the only thing left to do is write a node that converts these positions from the world frame into the image frame and updates the positions of the dynamic objects.
-The conversion from frame to frame can be calculated by moving the robot onto the markers in the image and reading out the position of the robot in Gazebo.
-Using the position ``x_i`` in of the i-th Marker and the corresponding position ``y_i`` of the robot inside the simulation.
-The 3x3 Transformation Matrix ``A`` can be calulated from the following systems of linear equations
+Scenes can be set up in Gazebo the same way that normal scenes are set up, however instead of a camera the position of dynamic objects is directly provided by the simulation.
 
-.. image:: gazebo_lgs.png
-   :align: center
+.. note::
+   For robots this position is usually provided by a `Odometry Topic <http://wiki.ros.org/navigation/Tutorials/RobotSetup/Odom>`_.
 
-Example code for this calculation and conversion is planned for future releases.
+However the image used for the setup is in this case not captured by the camera above the scene.
+Instead an arbitrary image can be used that is then set as the ground texture in Gazebo.
+A tutorial of how to do this can be found `here <https://answers.gazebosim.org//question/4761/how-to-build-a-world-with-real-image-as-ground-plane/>`_.
+
+All that remains is to convert the odometry positions of the simulation into pixel position in the game area.
+Given a specified 2 dimensional scale :math:`X_{sim}` in meters in the simulation, and image dimensions :math:`X_{game}` in pixels the conversion for a image point :math:`P_{sim}` into a point :math:`P_{game}` is calculated using:
+
+:math:`P_game = [P_{sim}_{x}, -1*P_{sim}_{y}]* ||X_{game}||/||X_{sim}|| - X_{game}/2`
+
+
