@@ -333,7 +333,7 @@ class rogata_helper():
     """
     def __init__(self):
         rospy.wait_for_service('intersect_line')
-        self.available_objects=rospy.get_param("scene_objects")
+        self.available_objects = rospy.get_param("scene_objects")
 
         self.abstract_set_position   = rospy.ServiceProxy('set_position',SetPos,self.set_pos)
         self.abstract_get_position   = rospy.ServiceProxy('get_position',GetPos,self.get_pos)
@@ -351,8 +351,12 @@ class rogata_helper():
 
         """
         req  = SetPosRequest(game_object,position[0],position[1])
-        resp = self.abstract_set_position(req)
-        return resp
+        try:
+            rospy.wait_for_service('set_position',0.5)
+            resp = self.abstract_set_position(req)
+            return resp
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
 
     def get_pos(self,game_object):
         """Abstracts the ``get_position`` ROS service communication to set the position of a :py:class:`game_object`
@@ -362,8 +366,12 @@ class rogata_helper():
 
         """
         req  = GetPosRequest(game_object)
-        resp = self.abstract_get_position(req)
-        return np.array([resp.x,resp.y])
+        try:
+            rospy.wait_for_service('get_position',0.5)
+            resp = self.abstract_get_position(req)
+            return np.array([resp.x,resp.y])
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
 
     def intersect(self,game_object,start_point,direction,length):
         """Abstracts the ``intersect_line`` ROS service communication to get the intersection between a :py:class:`game_object` and a line
@@ -380,8 +388,12 @@ class rogata_helper():
         """
         line = Pose2D(start_point[0],start_point[1],direction)
         req  = RequestInterRequest(game_object,line,length)
-        resp = self.abstract_line_intersect(req)
-        return np.array([resp.x,resp.y])
+        try:
+            rospy.wait_for_service('intersect_line',0.5)
+            resp = self.abstract_line_intersect(req)
+            return np.array([resp.x,resp.y])
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
 
     def dist(self,game_object,point):
         """Abstracts the ``get_distance`` ROS service communication to get the distance between a :py:class:`game_object` and a point
@@ -393,8 +405,12 @@ class rogata_helper():
 
         """
         req  = RequestDistRequest(game_object,point[0],point[1])
-        resp = self.abstract_get_distance(req)
-        return resp.distance
+        try:
+            rospy.wait_for_service('get_distance',0.5)
+            resp = self.abstract_get_distance(req)
+            return resp.distance
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
 
     def inside(self,game_object,point):
         """Abstracts the ``check_inside`` Ros Service communication to check wheter a given point is inside of a :py:class:`game_object`
@@ -407,8 +423,12 @@ class rogata_helper():
 
         """
         req  = CheckInsideRequest(game_object,point[0],point[1])
-        resp = self.abstract_check_inside(req)
-        return resp.inside
+        try:
+            rospy.wait_for_service('check_inside',0.5)
+            resp = self.abstract_check_inside(req)
+            return resp.inside
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
 
 
 
