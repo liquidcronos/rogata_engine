@@ -155,7 +155,8 @@ To calculate whether a ``guard`` can see a ``thief`` the following function can 
 
         seeing_distance = seeing_distance
         for walls in wall_objects:
-            seeing_distance = np.min(seeing_distance,rogata.intersect(walls,guard,direction,seeing_distance))
+            seeing_distance = min(seeing_distance,np.linalg.norm(rogata.intersect(walls,guard,direction,seeing_distance)))
+
         if np.linalg.norm(seeing_distance-guard) >= distance:
             return 1
         else:
