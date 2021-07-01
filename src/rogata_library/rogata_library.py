@@ -45,7 +45,7 @@ class game_object:
             inside_contour[i]= cv2.pointPolygonTest(self.area[i],point,False) != -1
 
         inside = False
-        for i in range(min(np.abs(self.holes)),max(np.abs(self.holes))+1):
+        for i in range(int(min(np.abs(self.holes))),int(max(np.abs(self.holes)))+1):
             holes =  np.argwhere(self.holes == -i)
             areas =  np.argwhere(self.holes ==  i)
             
