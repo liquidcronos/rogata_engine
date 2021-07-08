@@ -50,7 +50,7 @@ After the package is correctly installed, the python library has to be installed
 This is done by navigating to the root of the package and calling:
 ::
 
-    sudo pip install src/
+    sudo pip install ./src
 
 If the library is correctly installed, it should be possible to import it in python by calling
 ::
