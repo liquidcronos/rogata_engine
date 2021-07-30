@@ -172,6 +172,11 @@ It can be extracted using:
    The ROS communication interface is very versatile and allows the engine to interface not only with Python scripts but also C++ programs.
    However, it is also a bit cumbersome to use.
    For this reason, the :py:class:`rogata_library.rogata_helper` class can be initialized at the start of any python script. It directly implements the service setup and abstracts it using simple class functions 
+   
+ 
+.. warning::
+   Be carefull using the same instance of :py:class:`rogata_library.rogata_helper` in multiple callbacks or other parallel constructs, this can lead to the programm getting stuck. This happens because the same service is called from the same instance twice and thus only one will receive an answer. 
+   Since rospy has no timeout for services this will result in the service being stuck forever.
 
 
 
