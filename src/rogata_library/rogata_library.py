@@ -309,6 +309,9 @@ class scene():
         :type request: SetPosRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+
         choosen_object = self.game_objects[request.object]
         pos            = np.array([request.x,request.y])
         choosen_object.move_object(pos)
@@ -321,6 +324,9 @@ class scene():
         :type request: GetPosRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+
         choosen_object = self.game_objects[request.object]
         pos            = choosen_object.get_position()
         return GetPosResponse(pos[0],pos[1])
@@ -332,6 +338,9 @@ class scene():
         :type request: RequestInterRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+            
         choosen_object = self.game_objects[request.object]
         origin         = np.array([request.line.x,request.line.y])
         direction      = np.array([np.cos(request.line.theta),np.sin(request.line.theta)])
@@ -346,6 +355,9 @@ class scene():
         :type request: RequestDistRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+            
         choosen_object = self.game_objects[request.object]
         point          = np.array([request.x,request.y])
         dist           = choosen_object.shortest_distance(point)
@@ -358,6 +370,9 @@ class scene():
         :type request: CheckInsideRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+            
         choosen_object = self.game_objects[request.object]
         point          = np.array([request.x,request.y])
         inside         = bool(choosen_object.is_inside(point))
