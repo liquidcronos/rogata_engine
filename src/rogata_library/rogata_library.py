@@ -2,7 +2,6 @@ import numpy as np
 import cv2
 import cv2.aruco as aruco
 import rospy
-import rosservice
 from rogata_engine.srv import *
 from geometry_msgs.msg import Pose2D
 from nav_msgs.msg import Odometry
@@ -250,13 +249,12 @@ class scene():
     """
     
     def __init__(self,game_object_list):
-        current_services = rosservice.get_service_list()
-        if 'set_position' in current_services:
+        if rospy.has_param("scene_objects"):
             raise RuntimeError("More than one scene is currently active. Please unload the old scene before starting a new one.")
         for objects in game_object_list:
             if not isinstance(objects,game_object):
                 raise TypeError("One or more Inputs is not a game_object")
-                
+
         self.game_objects={}
         self.object_list = []
         self.dynamic_object_list = []
