@@ -149,7 +149,7 @@ class game_object:
             raise Warning("""Carefull, the desired objects is made up of multiple shapes. 
                              The returned position will be the mean position of all shapes. \n
                              To get the position of each shape, initialize each as its own object.""")
-                             
+
         cx   = 0
         cy   = 0
         size = 0
@@ -213,14 +213,23 @@ class dynamic_object(game_object):
     :param hitbox: A dictionary describing the shape of the objects contour
     :type hitbox: dictionary
     :param ID: The ID of an aruco marker which can be used to track the object
-    :param initial_ori: The inital orientation of the object in radians. Standart value is 0
+    :param initial_ori: The inital orientation of the object in radians [0,2*pi]. Standart value is 0
     ;type number:
     """
     def __init__(self,name,hitbox,ID,initial_ori=0):
+        supported_keys = ['rectange']
+        if not hitbox['type'] in supported_keys:
+            raise KeyError("The object shape "+hitbox['type']+" is currently not supported. \n Supported shapes are:"+supported_keys)
+        if not (ID-int(ID)== 0) or (ID < 0):
+            raise ValueError("Valid dynamic object IDs must be integers")
+        if not (0 <= orientation <= 2*np.pi):
+            raise ValueError("The orientation of a dynamic object is defined only on the range [0,2*pi]")
+
         if hitbox['type']=='rectangle':
             height = hitbox['height']
             width  = hitbox['width']
             area   = np.array([[0,0],[0,height],[width,height],[width,0]], dtype=np.int32)
+
         holes = np.array([1])
         game_object.__init__(self,name,np.array([area]),holes)
 
