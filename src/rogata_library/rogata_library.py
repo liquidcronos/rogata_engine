@@ -18,6 +18,19 @@ class game_object:
 
     def __init__(self,name,area,holes):
 
+        if not isinstance(name, str):
+            raise TypeError("An objects name must be a string")
+        if len(area) != len(holes):
+            raise IndexError("""Different number of hierachies and hole specification. \n 
+                                Each border should have a corresponding hole specification, 
+                                see  https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects .\n
+                                This error often happens if one has forgotten one ore more entries in the holes specification.""")
+        if sum(holes) < 0:
+            raise Warning("""There appear to be more inner borders than outer borders. \n
+                             While this is possible to allow for more complex objects,
+                             it often happens due to an error in the holes specification. \n
+                             See https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects for more information.""")
+
         self.name = name
         self.area=area
         self.holes=holes
@@ -36,8 +49,6 @@ class game_object:
         
         """
 
-
-        #TODO use the hole_spec tree to build the needet logic statement for detemining inside and outside of an arrea
         point=tuple(point)
         
         inside_contour=np.zeros(len(self.area))
@@ -87,7 +98,7 @@ class game_object:
 
         :param start: a 2D point which specifies the start of the line
         :type start: numpy array
-        :param direction: a normalized vector specifiying the direction of the line
+        :param direction: a vector specifiying the direction of the line (it will be automatically normalized)
         :type direction: numpy array
         :param length: a scalar specifiying the maximum length of the line
         :type length: scalar
@@ -100,11 +111,18 @@ class game_object:
 
         
         """
+
+        vec_len = np.linalg.norm(direction)
+        if vec_len != 1:
+            raise Warning("The input direction vector was normalized.  Make sure that you intended to send a non normalized direction vector.")
+        if length <= 0:
+            raise ValueError("The specified length was equal or smaller than zero. In general the length of a line has to be a positive number")
+
         position = start
-        default  = start+length*direction/np.linalg.norm(direction)
+        default  = start+length*direction/vec_len
         for k in  range(iterations):
             shortest_dist = self.shortest_distance(position)
-            position      = position + shortest_dist*direction/np.linalg.norm(direction)
+            position      = position + shortest_dist*direction/vec_len
 
             if np.linalg.norm(position-start) >= length:
                 break
@@ -127,6 +145,11 @@ class game_object:
 
         
         """
+        if len(self.area) > 1:
+            raise Warning("""Carefull, the desired objects is made up of multiple shapes. 
+                             The returned position will be the mean position of all shapes. \n
+                             To get the position of each shape, initialize each as its own object.""")
+                             
         cx   = 0
         cy   = 0
         size = 0
