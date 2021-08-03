@@ -35,6 +35,8 @@ class game_object:
         self.area=area
         self.holes=holes
 
+    def __str__(self):
+        return self.name
 
     def is_inside(self,point):
         """Checks wheter a point is inside the area of the object
