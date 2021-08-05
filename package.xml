@@ -16,11 +16,11 @@
   <url> https://rogata-engine.readthedocs.io/en/latest/what_is_rogata.html</url> 
 
 
-
-
   <build_depend>geometry_msgs</build_depend>
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>python-numpy</exec_depend>
+  <exec_depend>python-opencv</exec_depend>
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>
