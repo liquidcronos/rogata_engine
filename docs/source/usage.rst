@@ -46,18 +46,15 @@ If everything is correctly installed, the following command should change the cu
 .. _catkin tutorial: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
 
-After the package is correctly installed, the python library has to be installed to import it into custom scripts.
-This is done by navigating to the root of the package and calling:
-::
-
-    sudo pip install ./src
-
-If the library is correctly installed, it should be possible to import it in python by calling
+The package installation should also install the rogata_library, a python package which allows for writing of of own game objects and extensions to the engine.It is imported by calling
 ::
 
     import rogata_library as rgt
 
-
+.. warning::
+   The rogata_library depends on other packages. While catkin_make should automatically resolve them, it does not check for a minimum version.
+   On old systems this might lead to problems. For this reason the ``/src`` directory contains a requirements.txt file that can be used to update all the needed python packages.
+   This is done by calling ``sudo pip install -r /path/to/requirements.txt``.
 
 
 Setting up the Game Area
