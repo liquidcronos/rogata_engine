@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 import cv2
 import cv2.aruco as aruco
 import rospy
@@ -18,10 +19,25 @@ class game_object:
 
     def __init__(self,name,area,holes):
 
+        if not isinstance(name, str):
+            raise TypeError("An objects name must be a string")
+        if len(area) != len(holes):
+            raise IndexError("""Different number of hierachies and hole specification. 
+Each border should have a corresponding hole specification, 
+see  https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects .
+This error often happens if one has forgotten one ore more entries in the holes specification.""")
+        if sum(holes) < 0:
+            warnings.warn("""There appear to be more inner borders than outer borders. 
+ While this is possible to allow for more complex objects,
+ it often happens due to an error in the holes specification.
+ See https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects for more information.""", stacklevel=2)
+
         self.name = name
         self.area=area
         self.holes=holes
 
+    def __str__(self):
+        return self.name
 
     def is_inside(self,point):
         """Checks wheter a point is inside the area of the object
@@ -36,8 +52,6 @@ class game_object:
         
         """
 
-
-        #TODO use the hole_spec tree to build the needet logic statement for detemining inside and outside of an arrea
         point=tuple(point)
         
         inside_contour=np.zeros(len(self.area))
@@ -87,7 +101,7 @@ class game_object:
 
         :param start: a 2D point which specifies the start of the line
         :type start: numpy array
-        :param direction: a normalized vector specifiying the direction of the line
+        :param direction: a vector specifiying the direction of the line (it will be automatically normalized)
         :type direction: numpy array
         :param length: a scalar specifiying the maximum length of the line
         :type length: scalar
@@ -100,11 +114,18 @@ class game_object:
 
         
         """
+
+        vec_len = np.linalg.norm(direction)
+        if vec_len != 1:
+            warnings.warn("The input direction vector was normalized.  Make sure that you intended to send a non normalized direction vector.", stacklevel=2)
+        if length <= 0:
+            raise ValueError("The specified length was equal or smaller than zero. In general the length of a line has to be a positive number")
+
         position = start
-        default  = start+length*direction/np.linalg.norm(direction)
+        default  = start+length*direction/vec_len
         for k in  range(iterations):
             shortest_dist = self.shortest_distance(position)
-            position      = position + shortest_dist*direction/np.linalg.norm(direction)
+            position      = position + shortest_dist*direction/vec_len
 
             if np.linalg.norm(position-start) >= length:
                 break
@@ -127,6 +148,11 @@ class game_object:
 
         
         """
+        if len(self.area) > 1:
+            warnings.warn("""Carefull, the desired objects is made up of multiple shapes. 
+The returned position will be the mean position of all shapes. 
+To get the position of each shape, initialize each as its own object.""", stacklevel=2)
+
         cx   = 0
         cy   = 0
         size = 0
@@ -190,14 +216,23 @@ class dynamic_object(game_object):
     :param hitbox: A dictionary describing the shape of the objects contour
     :type hitbox: dictionary
     :param ID: The ID of an aruco marker which can be used to track the object
-    :param initial_ori: The inital orientation of the object in radians. Standart value is 0
+    :param initial_ori: The inital orientation of the object in radians [0,2*pi]. Standart value is 0
     ;type number:
     """
     def __init__(self,name,hitbox,ID,initial_ori=0):
+        supported_keys = ['rectange']
+        if not hitbox['type'] in supported_keys:
+            raise KeyError("The object shape "+hitbox['type']+" is currently not supported. \n Supported shapes are:"+supported_keys)
+        if not (ID-int(ID)== 0) or (ID < 0):
+            raise ValueError("Valid dynamic object IDs must be integers")
+        if not (0 <= orientation <= 2*np.pi):
+            raise ValueError("The orientation of a dynamic object is defined only on the range [0,2*pi]")
+
         if hitbox['type']=='rectangle':
             height = hitbox['height']
             width  = hitbox['width']
             area   = np.array([[0,0],[0,height],[width,height],[width,0]], dtype=np.int32)
+
         holes = np.array([1])
         game_object.__init__(self,name,np.array([area]),holes)
 
@@ -215,6 +250,12 @@ class scene():
     """
     
     def __init__(self,game_object_list):
+        if rospy.has_param("scene_objects"):
+            raise RuntimeError("More than one scene is currently active. Please unload the old scene before starting a new one.")
+        for objects in game_object_list:
+            if not isinstance(objects,game_object):
+                raise TypeError("One or more Inputs is not a game_object")
+
         self.game_objects={}
         self.object_list = []
         self.dynamic_object_list = []
@@ -269,6 +310,9 @@ class scene():
         :type request: SetPosRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+
         choosen_object = self.game_objects[request.object]
         pos            = np.array([request.x,request.y])
         choosen_object.move_object(pos)
@@ -281,6 +325,9 @@ class scene():
         :type request: GetPosRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+
         choosen_object = self.game_objects[request.object]
         pos            = choosen_object.get_position()
         return GetPosResponse(pos[0],pos[1])
@@ -292,6 +339,9 @@ class scene():
         :type request: RequestInterRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+            
         choosen_object = self.game_objects[request.object]
         origin         = np.array([request.line.x,request.line.y])
         direction      = np.array([np.cos(request.line.theta),np.sin(request.line.theta)])
@@ -306,6 +356,9 @@ class scene():
         :type request: RequestDistRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+            
         choosen_object = self.game_objects[request.object]
         point          = np.array([request.x,request.y])
         dist           = choosen_object.shortest_distance(point)
@@ -318,6 +371,9 @@ class scene():
         :type request: CheckInsideRequest
 
         """
+        if not request.object in self.object_list:
+            raise KeyError("No game_object named "+ request.object + "A list of current game_objects is set as ros parameter scene_objects" )
+            
         choosen_object = self.game_objects[request.object]
         point          = np.array([request.x,request.y])
         inside         = bool(choosen_object.is_inside(point))
