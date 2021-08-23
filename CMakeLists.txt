@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(rogata_engine)
 
+catkin_python_setup()
 find_package(catkin REQUIRED COMPONENTS
     roscpp
     rospy

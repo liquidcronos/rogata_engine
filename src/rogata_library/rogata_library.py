@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 import cv2
 import cv2.aruco as aruco
 import rospy
@@ -21,15 +22,15 @@ class game_object:
         if not isinstance(name, str):
             raise TypeError("An objects name must be a string")
         if len(area) != len(holes):
-            raise IndexError("""Different number of hierachies and hole specification. \n 
-                                Each border should have a corresponding hole specification, 
-                                see  https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects .\n
-                                This error often happens if one has forgotten one ore more entries in the holes specification.""")
+            raise IndexError("""Different number of hierachies and hole specification. 
+Each border should have a corresponding hole specification, 
+see  https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects .
+This error often happens if one has forgotten one ore more entries in the holes specification.""")
         if sum(holes) < 0:
-            raise Warning("""There appear to be more inner borders than outer borders. \n
-                             While this is possible to allow for more complex objects,
-                             it often happens due to an error in the holes specification. \n
-                             See https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects for more information.""")
+            warnings.warn("""There appear to be more inner borders than outer borders. 
+ While this is possible to allow for more complex objects,
+ it often happens due to an error in the holes specification.
+ See https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#game-objects for more information.""", stacklevel=2)
 
         self.name = name
         self.area=area
@@ -116,7 +117,7 @@ class game_object:
 
         vec_len = np.linalg.norm(direction)
         if vec_len != 1:
-            raise Warning("The input direction vector was normalized.  Make sure that you intended to send a non normalized direction vector.")
+            warnings.warn("The input direction vector was normalized.  Make sure that you intended to send a non normalized direction vector.", stacklevel=2)
         if length <= 0:
             raise ValueError("The specified length was equal or smaller than zero. In general the length of a line has to be a positive number")
 
@@ -148,9 +149,9 @@ class game_object:
         
         """
         if len(self.area) > 1:
-            raise Warning("""Carefull, the desired objects is made up of multiple shapes. 
-                             The returned position will be the mean position of all shapes. \n
-                             To get the position of each shape, initialize each as its own object.""")
+            warnings.warn("""Carefull, the desired objects is made up of multiple shapes. 
+The returned position will be the mean position of all shapes. 
+To get the position of each shape, initialize each as its own object.""", stacklevel=2)
 
         cx   = 0
         cy   = 0
