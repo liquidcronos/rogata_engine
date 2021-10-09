@@ -2,10 +2,11 @@
 import sys
 import cv2
 import rospy
-import rogata_library as rgt
+import numpy as np
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-import numpy as np
+
+import rogata_library as rgt
 
 
 def img_call(ros_img, object_name_list):

@@ -1,23 +1,24 @@
 #!/usr/bin/env python
-import rogata_library as rgt
+import sys
 import cv2
 import cv2.aruco as aruco
 import numpy as np
-import sys
+
+import rogata_library as rgt
 
 
 def calibrate_colors(image):
     """Utility to calibrate the colors for contour detection
 
     Allows the visual calibration of contours which can be saved by pressing the s key.
-    Colors are defined in HSV color space. 
+    Colors are defined in HSV color space.
     For each Value H, S and V the median value as well as the acceptable range can be defined.
     Additionally the ID of a aruco marker used to specify the wanted contour  can be specified.
-    Since this can sometimes lead to the contour being the outline of the marker, 
+    Since this can sometimes lead to the contour being the outline of the marker,
     the minimum hole size in pixels can be specified.
     """
 
-    def nothing(x):
+    def nothing(_):
         pass
     cv2.namedWindow("Test image")
     cv2.createTrackbar("H", "Test image", 0, 179, nothing)
@@ -27,7 +28,7 @@ def calibrate_colors(image):
     cv2.createTrackbar("V", "Test image", 0, 255, nothing)
     cv2.createTrackbar("V range", "Test image", 0, 120, nothing)
     cv2.createTrackbar("Marker Id", "Test image", 0, 120, nothing)
-    hight, width, channels = image.shape
+    hight, width, _ = image.shape
     cv2.createTrackbar("Minimum contour size", "Test image",
                        0, hight*width, nothing)
     while(1):
