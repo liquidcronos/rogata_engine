@@ -115,15 +115,15 @@ class GameObject:
 
         :param start: a 2D point which specifies the start of the line
         :type start: numpy array
-        :param direction: a vector specifiying the direction of the line 
+        :param direction: a vector specifiying the direction of the line
                           (it will be automatically normalized)
         :type direction: numpy array
         :param length: a scalar specifiying the maximum length of the line
         :type length: scalar
-        :param iterations: the number of iterations for the ray marching algorithm used 
+        :param iterations: the number of iterations for the ray marching algorithm used
                            (Default value = 100)
         :type iterations: scalar
-        :param precision: the precision with which the intersection is being calculated 
+        :param precision: the precision with which the intersection is being calculated
                           (Default value = 0.001)
         :type precision: scalar
         :returns: 2D position of the intersection
@@ -181,7 +181,7 @@ To get the position of each shape, initialize each as its own object.""", stackl
             center_x = center_x + moments['m10']
             center_y = center_y + moments['m01']
             size = size + moments['m00']
-        return np.array([int(cx/float(size)), int(cy/float(size))])
+        return np.array([int(center_x/float(size)), int(center_y/float(size))])
 
     def move_object(self, new_pos, rotate=0):
         """moves the object to a new position and orientation
@@ -201,7 +201,8 @@ To get the position of each shape, initialize each as its own object.""", stackl
             center_x = center_x + moments['m10']
             center_y = center_y + moments['m01']
             size = size + moments['m00']
-        current_center = np.array([int(cx/float(size)), int(cy/float(size))])
+        current_center = np.array(
+            [int(center_x/float(size)), int(center_y/float(size))])
         # current_center   = self.get_position()
         for i in range(len(self.area)):
             centered_contour = self.area[i] - current_center
@@ -222,11 +223,11 @@ class dynamic_object(GameObject):
     Dynamic objects are able to change their position and can be tracked via aruco markers.
     Their current position is published by each :py:class`Scene` containing them.
 
-    Instead of initializing the object using a contour 
+    Instead of initializing the object using a contour
     a dictionary describing a hitbox needs to be provided.
     The dynamic object then builds the contour.
 
-    Currently only rectangular hitboxes are supported. 
+    Currently only rectangular hitboxes are supported.
     The dictionary of such a hitbox can be set up as follows:
     ::
 
@@ -239,7 +240,7 @@ class dynamic_object(GameObject):
     :param hitbox: A dictionary describing the shape of the objects contour
     :type hitbox: dictionary
     :param ID: The ID of an aruco marker which can be used to track the object
-    :param initial_ori: The inital orientation of the object in radians [0,2*pi]. 
+    :param initial_ori: The inital orientation of the object in radians [0,2*pi].
                         Standart value is 0
     ;type number:
     """
@@ -270,9 +271,9 @@ class dynamic_object(GameObject):
 
 class Scene():
     """A class implemennting scene objects comprised of multiple :py:class:`GameObject` objects.
-    It offers Ros Client interfaces which allow 
+    It offers Ros Client interfaces which allow
     other nodes to request information about the game objects.
-    the communication interfaces are described in the 
+    the communication interfaces are described in the
     `documentation <https://rogata-engine.readthedocs.io/en/latest/how_it_works.html#scenes>`_
 
     :param game_object_list: A list of containing  :py:class`GameObject` objects.
@@ -421,7 +422,7 @@ class Scene():
 class rogata_helper():
     """A class for people unfarmiliar with ROS.
 
-    It abstracts the ROS service communication with the 
+    It abstracts the ROS service communication with the
     :py:class:`Scene` class into simply python functions.
 
 
@@ -443,7 +444,7 @@ class rogata_helper():
             'check_inside', CheckInside, self.inside)
 
     def set_pos(self, game_object, position):
-        """Abstracts the ``set_position`` ROS service communication 
+        """Abstracts the ``set_position`` ROS service communication
            to set the position of a :py:class:`GameObject`
 
         :param game_object: The name of the game object
@@ -461,7 +462,7 @@ class rogata_helper():
             print("Service call failed: %s" % exception)
 
     def get_pos(self, game_object):
-        """Abstracts the ``get_position`` ROS service communication 
+        """Abstracts the ``get_position`` ROS service communication
            to set the position of a :py:class:`GameObject`
 
         :param game_object: The name of the game object
@@ -477,7 +478,7 @@ class rogata_helper():
             print("Service call failed: %s" % exception)
 
     def intersect(self, game_object, start_point, direction, length):
-        """Abstracts the ``intersect_line`` ROS service communication 
+        """Abstracts the ``intersect_line`` ROS service communication
            to get the intersection between a :py:class:`GameObject` and a line
 
         :param game_object: The name of the game object to intersect with
@@ -500,7 +501,7 @@ class rogata_helper():
             print("Service call failed: %s" % exception)
 
     def dist(self, game_object, point):
-        """Abstracts the ``get_distance`` ROS service communication 
+        """Abstracts the ``get_distance`` ROS service communication
            to get the distance between a :py:class:`GameObject` and a point
 
         :param game_object: The name of the game object whoose distance should be measured
@@ -518,7 +519,7 @@ class rogata_helper():
             print("Service call failed: %s" % exception)
 
     def inside(self, game_object, point):
-        """Abstracts the ``check_inside`` Ros Service communication 
+        """Abstracts the ``check_inside`` Ros Service communication
            to check wheter a given point is inside of a :py:class:`GameObject`
 
 
@@ -538,12 +539,12 @@ class rogata_helper():
 
 
 def track_dynamic_objects(gray_image, object_name_list):
-    """Function which automatically tracks a list of :py:class:`dynamic_object` 
+    """Function which automatically tracks a list of :py:class:`dynamic_object`
        that are part of a :py:class:`Scene`
 
-    The functions returns no position and instead 
+    The functions returns no position and instead
     updates the internal state of each :py:class:`dynamic_object`.
-    This position can be accessed using 
+    This position can be accessed using
     the interfaces of the :py:class:`Scene` containing the objects.
 
     :param gray_image: A grayscale image in which the objects should be tracked
@@ -607,9 +608,9 @@ def detect_area(hsv_img, lower_color, upper_color, marker_id, min_size, draw=Fal
     """Detects the contour of an object containing a marker based on color
 
     It always returns the smallest contour which still contains the marker
-    The contour is detected using an image with hsv color space 
+    The contour is detected using an image with hsv color space
     to be robust under different lighting conditions.
-    If draw=True the systems draws all found contours 
+    If draw=True the systems draws all found contours
     as well as the current smalles one containing the marker onto hsv_img
 
     :param hsv_image: a Image in hsv color space in which the contours  should be detected
