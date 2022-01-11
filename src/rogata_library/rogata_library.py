@@ -252,7 +252,7 @@ class dynamic_object(GameObject):
                            " is currently not supported. \n Supported shapes are:"+supported_keys)
         if not (ID-int(ID) == 0) or (ID < 0):
             raise ValueError("Valid dynamic object IDs must be integers")
-        if not 0 <= orientation <= 2*np.pi:
+        if not 0 <= initial_ori <= 2*np.pi:
             raise ValueError(
                 "The orientation of a dynamic object is defined only on the range [0,2*pi]")
 
