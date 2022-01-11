@@ -3,12 +3,12 @@ Getting Started
 
 .. toctree::
    :hidden:
-   
 
 
 
-The RoGaTa engine builds upon `Ros Melodic`_ to interface with the robots, and `OpenCV-Python`_ to calibrate the arena and track all dynamic objects.
-The first step is thus to install ROS on all robots as well as the host PC. 
+
+The RoGaTa engine builds upon `Ros Noetic`_ to interface with the robots, and `OpenCV-Python`_ to calibrate the arena and track all dynamic objects.
+The first step is thus to install ROS on all robots as well as the host PC.
 
 The host PC refers in this case to the PC which runs the engine which means that additionally OpenCV has to be installed there.
 
@@ -16,7 +16,7 @@ The host PC refers in this case to the PC which runs the engine which means that
 
 
 
-.. _Ros Melodic: http://wiki.ros.org/melodic
+.. _Ros Melodic: https://wiki.ros.org/noetic
 .. _OpenCV-Python: https://docs.opencv.org/master/da/df6/tutorial_py_table_of_contents_setup.html
 
 
@@ -63,10 +63,10 @@ The first step in actually using the engine is to set up the game area.
 Since the engine needs a camera to calibrate itself and track at least one :py:class:`rogata_library.dynamic_object`, the first step is setting up a camera.
 
 The Camera needs to be affixed above the game area perpendicular to the ground.
-In General the higher up the camera the better since it leads to a larger game area. 
+In General the higher up the camera the better since it leads to a larger game area.
 However, it also decreases the precision of the object tracking.
 This also means that bigger markers have to be used.
-This can of course be circumvented by using a higher resolution camera. 
+This can of course be circumvented by using a higher resolution camera.
 Since higher resolution pictures take longer to process this could however slow down the engine depending on the computer it's running on.
 
 
@@ -174,7 +174,7 @@ This procedure can now be repeated for each contour.
 
 
 If there are very small objects inside the scene such as walls or open contours such as the yellow one in the top left a trick can be employed.
-Instead of using the color of the object, the color of the Ground can be used. 
+Instead of using the color of the object, the color of the Ground can be used.
 This specifies a contour around the desired object which can then be selected.
 
 However, in this case, the border of the marker itself might count as a contour. To circumvent this the Minimum Contour Size slider can be used to specify the minimum size of the chosen contour.
@@ -228,7 +228,7 @@ For the ``line of sight breakers`` however the floor contour trick was used. Sin
 In addition to the static objects on the floor, robots themself also need to be set up as a :py:class:`rogata_library.dynamic object`.
 Assuming the Robot is equipped with a marker with ID 6, it can be initialized using:
 ::
-    
+
     # Setting up the robot object
     name      = "pioneer_robot"
     id        = 6
@@ -301,7 +301,7 @@ More information about ROS and what a ``Package`` is can be found in the `ROS tu
 It is strongly encouraged that one familiarizes himself with ROS before trying to use the RoGaTa Engine.
 
 If the scene is initialized correctly it should publish the position of the robot and provide a multitude of services.
-The existence of the publisher can be checked using 
+The existence of the publisher can be checked using
 ::
 
     rostopic echo /pioneer_robot/odom
