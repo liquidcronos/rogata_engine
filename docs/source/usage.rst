@@ -206,13 +206,13 @@ the first step in setting up the objects is loading the contour objects saved by
     # Setting up the goal object
     left_goal  = np.load('left_yellow_rectangle.npy')
     right_goal = np.load('right_yellow_rectangle.npy')
-    goals      = rgt.game_object('goals',[left_goal,right_goal],np.array([1,1]))
+    goals      = rgt.GameObject('goals',[left_goal,right_goal],np.array([1,1]))
 
 
     # Setting up the line of sight breakers
     large_polygon = np.load('red_polygon.npy')
     floor_trick   = np.load('floor.npy')
-    los_breakers  = rgt.game_object('line_of_sight_breakers',
+    los_breakers  = rgt.GameObject('line_of_sight_breakers',
                                     [large_polygon,floor_trick],
                                     np.array([1,-1]))
 
@@ -261,13 +261,13 @@ This scene can now be packacked inside a ROS Node:
     # Setting up the goal object
     left_goal  = np.load('left_yellow_rectangle.npy')
     right_goal = np.load('right_yellow_rectangle.npy')
-    goals      = rgt.game_object('goals',[left_goal,right_goal],np.array([1,1]))
+    goals      = rgt.GameObject('goals',[left_goal,right_goal],np.array([1,1]))
 
 
     # Setting up the line of sight breakers
     large_polygon = np.load('red_polygon.npy')
     floor_trick   = np.load('floor.npy')
-    los_breakers  = rgt.game_object('line_of_sight_breakers',
+    los_breakers  = rgt.GameObject('line_of_sight_breakers',
                                     [large_polygon,floor_trick],
                                     np.array([1,-1])
 

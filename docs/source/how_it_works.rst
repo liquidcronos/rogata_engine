@@ -41,7 +41,7 @@ Examples of game objects include:
 
 In general, such an object is defined by a name as well as the space it occupies within the game area.
 The simplest way to define an area is using a mask that specifies for each position whether the point is inside or outside the area.
-In robotics, such a concept is sometimes also called an occupancy grid.
+In robotics, such a concept is sometimes also called an occupancenter_ygrid.
 However, since storing and manipulating such grids is resource-intensive.
 For this reason, only the borders of an object are used to define its area.
 
@@ -63,7 +63,7 @@ An example can be seen in the following image:
 .. image:: hierachy
 
 Using the border, which is specified as an opencv contour object as well as a name and a hierarchy a game object can be initialized.
-Its documentation can be seen in :py:class:`rogata_library.game_object`.
+Its documentation can be seen in :py:class:`rogata_library.GameObject`.
 
 
 Interacting with a Game Object
@@ -71,7 +71,7 @@ Interacting with a Game Object
 There are multiple ways to interact with Game Objects.
 Since contrary to conventional game engines, graphic rendering and physics simulation is not needed, these focus mostly on detecting collisions and ray casting.
 
-A full overview of the functionality can be seen in :py:class:`rogata_library.game_object`.
+A full overview of the functionality can be seen in :py:class:`rogata_library.GameObject`.
 
 
 
@@ -88,14 +88,14 @@ Scenes
 ======
 Scenes are the equivalent of video game levels.
 A scene defines which game objects are currently loaded and offers the functionality to interact with them.
-As such it is initialized using a list of :py:class:`rogata_library.game_object`.
+As such it is initialized using a list of :py:class:`rogata_library.GameObject`.
 
 Using the objects, a scene offers several ROS communication schemes that allow other nodes to interact with the game objects.
 These include the following `ROS services <http://wiki.ros.org/Services>`_:
 
 set_position
 ^^^^^^^^^^^^
-This service allows any ROS node to change the position of a game_object by providing the desired object's name ``NAME`` and a new position ``POS``.
+This service allows any ROS node to change the position of a GameObject by providing the desired object's name ``NAME`` and a new position ``POS``.
 In python the service can be set up and called using:
 ::
 
@@ -130,7 +130,7 @@ In python the service can be set up and called using:
 
     # Calling the service
     line      = Pose2D(START[0],START[1],THETA)
-    req       = RequestInterRequest(game_object,line,length)
+    req       = RequestInterRequest(GameObject,line,length)
     resp      = intersect(req)
 
 Its returned response is a ROS service message containing the position of the intersection. This intersection can be extracted using:
